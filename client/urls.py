@@ -10,6 +10,7 @@ urlpatterns = [
     path('etape2/details/<int:billet_id>/',views.billet_detail_view,name='billet_detail_view'),
     path('etape2/<int:res_id>/',views.reservation2_view,name='etape2'),
     path('infoligne/<int:ln_id>/',views.infoligne_view, name='infoligne'),
-    
+    path('annulation1/',views.annulation1_view,name='annulation1'),
+    path('annulation2/<int:billet_id>/',views.annulation2_view,name='annulation2'),
 ]
 

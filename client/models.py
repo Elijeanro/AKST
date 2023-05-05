@@ -12,6 +12,8 @@ class Suggestion(models.Model):
     def __str__(self):
         return self.date
     
+class EtatBillet(models.Model):
+        libelle=models.CharField(max_length=20)
 class Billet(models.Model):
     nom_clt=models.CharField(max_length=30)
     prenom_clt=models.CharField(max_length=50)
@@ -26,6 +28,7 @@ class Billet(models.Model):
     place=models.SmallIntegerField()
     montant_billet=models.FloatField()
     date_heure=models.DateTimeField(auto_now_add=True)
+    etat_billet=models.ForeignKey(EtatBillet, on_delete=models.DO_NOTHING, default=1)
     bl_valide=models.BooleanField
     def __str__(self):
         return str(self.code_billet)

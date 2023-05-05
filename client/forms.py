@@ -67,12 +67,7 @@ class BilletForm(forms.Form):
             'max':'5',
             'placeholder':'Nombre de place'})
         )
-    # def __init__(self, *args, **kwargs):
-    #     super(BilletForm, self).__init__(*args, **kwargs)
-    #     id_b=Billet.objects.values_list('id',flat=True).order_by('-id').first()
-    #     id_billet=id_b+1
-    #     self.fields['id'].initial = id_billet # attribuer une valeur initiale à l'id
-
+    
 class ContactForm(forms.Form):
     email = forms.EmailField()
     message = forms.CharField(widget=forms.Textarea)
@@ -87,7 +82,9 @@ class ContactForm(forms.Form):
             'email',
             'message',
         )
-
+class RechercheBillet(forms.Form):
+    code=forms.CharField(widget=forms.TextInput(attrs={'class': 'input100', 'placeholder':'Nom'})
+        )
 class MonForm(forms.ModelForm):
     class Meta:
         model=Suggestion
@@ -95,3 +92,5 @@ class MonForm(forms.ModelForm):
         
     def __init__(self, email,message) -> None:
         super().__init__(email,message)
+        
+    

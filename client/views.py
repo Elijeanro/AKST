@@ -91,3 +91,34 @@ def reservation2_view(request,res_id):
             'form1':formulaire,
         }
     return render(request, 'reservation_etape2.html', context)
+
+def annulation1_view(request):
+    if request.method=='POST':
+        recherche=forms.RechercheBillet(request.POST)
+        billet=models.Billet.objects.all()
+        if recherche.is_valid():
+            donnee=recherche.cleaned_data
+            code=donnee['code_billet']
+            resultat=billet.filter(code_billet=code)
+            if resultat is not None:
+                idbillet=billet.filter(code_billet=code).values_list('id',flat=True)
+                return redirect(reverse('client:annulation2',args=idbillet))
+            else:
+                message="Aucun billet ne correspond à ce code"
+                return HttpResponse(render,message)
+    else:
+        recherche=forms.RechercheBillet()
+        context={
+            'recherche':recherche,
+        }
+    return render(request,'annulation1.html',context)
+
+def annulation2_view(request, billet_id):
+    billet = get_object_or_404(models.Billet, pk=billet_id)
+    infoln = get_object_or_404(InfoLigne, pk=billet.infoligne_id.pk)
+    context = {
+        'billet': billet,
+        'infoln' : infoln,
+        'ligne' : ligne,
+        }
+    return render(request, 'billet_detail.html', context)
