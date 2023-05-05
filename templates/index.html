@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="fr">
+
+<head>
+  <title>AKS-T | accueil</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="{% static 'layout.css' %}" type="text/css" media="all">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/framework.css' %}">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+
+
+</head>
+
+<body id="top">
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+
+  <div class="wrapper row0">
+
+    <div id="topbar" class="hoc clear">
+      <!-- ################################################################################################ -->
+      <div class="fl_left">
+        <ul>
+          <li><i class="fa fa-phone"></i> +228 90 00 00 09</li>
+          <li><i class="fa fa-envelope-o"></i> akstransport@gmail.com</li>
+        </ul>
+      </div>
+      <!-- ################################################################################################ -->
+    </div>
+  </div>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <div class="wrapper row1">
+    <header id="header" class="hoc clear">
+      <!-- ################################################################################################ -->
+      <div id="logo" class="fl_left">
+        <img src="{% static 'images/logo1.png' %}" alt="">
+        {% now 'd/m/Y H:i:s' %}
+      </div>
+
+      <!-- ################################################################################################ -->
+    </header>
+  </div>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <div class="nav" id="menu">
+
+    <div class="wrapper row2">
+      <nav id="mainav" class="hoc clear">
+        <!-- ################################################################################################ -->
+        <ul class="clear">
+          <li class="active"><a href="index.html">ACCUEIL</a></li>
+          <li><a href="#">NOS PARTENAIRES</a></li>
+          <li><a class="drop" href="#">VOYAGE</a>
+            <ul>
+
+              <li><a class="drop" href="#">BILLETS</a>
+                <ul>
+                  <li><a href="{% url 'client:etape1' %}">FAIRE UNE RESERVATION</a></li>
+                  <li><a href="pages/edreserv.html">MODIFIER UNE RESERVATION</a></li>
+                  <li><a href="pages/anreserv.html">ANNULER UNE RESERVATION</a></li>
+                </ul>
+              </li>
+              <li><a href="pages/itineraires.html">CONSULTER LES ITINERAIRES</a></li>
+
+            </ul>
+          </li>
+          <li><a href="{% url 'client:suggestion' %}">SUGGESTIONS</a></li>
+          <li><a href="#about">A PROPOS DE NOUS</a></li>
+          <li><a href="#contact">CONTACTEZ-NOUS</a></li>
+        </ul>
+        <!-- ################################################################################################ -->
+      </nav>
+    </div>
+  </div>
+
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <div class="wrapper parallax bgded overlay" style="background-image:url('static/images/backgrounds/banner.webp');">
+    <article id="pageintro" class="hoc clear">
+      <!-- ################################################################################################ -->
+      <h3 class="heading">VOYAGEZ PLUS FACILEMENT</h3>
+      <h6 style="text-align: center;">Une plateforme qui vous fait gagner en temps pour vos déplacements.</h6>
+      <!-- ################################################################################################ -->
+    </article>
+  </div>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <div class="clear">
+    <div class="wrapper row3">
+      <div class="sectiontitle1">
+        <h3 class="heading"><br> RECHERCHEZ VOTRE ITINERAIRE</h3>
+      </div>
+
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <div class="wrapper bgded overlay" style="background-image:url('static/images/backgrounds/1.jpg');">
+
+        <section class="hoc container clear">
+          <!-- ################################################################################################ -->
+          <div class="sectiontitle">
+            <h6 class="heading">Ville de Départ : Lomé </h6>
+          </div>
+          <h3 style="font-size: 16px; text-align: center;">
+            <p>Cliquez sur "INFO..." pour en savoir plus sur la ligne.</p>
+            
+          </h3>
+          <div class="group team">
+            <div class="group btmspace-50 demo">
+              {% for l in ligne %}
+                
+                <div class="{% cycle 'one_quarter first' 'one_quarter' 'one_quarter' 'one_quarter' %}" style="border: 3px outset rgb(51, 3, 95);
+                border-radius: 25% 13%; height: 170px;
+                padding-top: 20px;
+                text-align: center;
+                padding: 5px;
+                margin: 5px;
+                background: linear-gradient(rgb(110, 110, 151), 10%, rgb(46,50,58));">
+                  <span style="font-size:20px;">&#128205;</span>
+                  <h4 style="font-size: 17px;"> Ligne </h4>
+                  <h4 style="font-size: 19px;">&#128198; : {{l.ville_dep.nom_ville}} - {{l.ville_arr.nom_ville}}</h4>
+                  <h4 style="font-size: 17px;"> <a href=" {% url 'client:infoligne' l.id %} "
+                      style="color: rgb(241,241,241);">&#128203;INFO...</a> </h4>
+                  <div class="one_quarter" style="color: black;">
+  
+                  </div><br>
+  
+                </div>        
+              {% endfor %}
+
+            </div>
+          </div>
+
+          <!--             
+            {% for c in comp %}
+              <li> {{c.nom_cp}} </li>
+            {% endfor %} -->
+
+          <!-- <ul>
+              {% for b in lesbus %}
+              <li> <a href="">{{b.matricule_bus}}</a> </li>
+              {% endfor %}
+            </ul> -->
+
+
+
+
+
+          <!-- ################################################################################################ -->
+        </section>
+      </div>
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+
+      <div id="about" class="wrapper parallax bgded overlay"
+        style="background-image:url('static/images/backgrounds/banner2.webp');">
+        <section class="hoc container clear">
+          <!-- ################################################################################################ -->
+          <div class="sectiontitle">
+            <h6 class="heading">A PROPOS DE NOUS</h6>
+          </div>
+          <div class="group">
+            <div class="one_half first">
+              <!-- <p><strong>Non imperdiet mi praesent lectus</strong></p> -->
+              <p style="font-size: 1.5em;">La plateforme AKS-T est un moyen mis en place pour permettre à toute personne
+                désireuse de réserver, modifier, annuler un billet de voyage tout en ayant une possibilité de choix de
+                la
+                compagnie à bord de laquelle elle désire voyager; à une compagnie de voyage de pouvoir augmenter son
+                chiffre
+                d'affaire en adoptant un système de vente de billet électronique
+
+                Les avantages de cette plateforme sont multiples et l'on peut citer entre autre la possibilité au
+                voyageur
+                de gagner en temps et en déplacement dans ses démarches pour la réservation d'un billet de voyage.</p>
+            </div>
+            <div class="one_half">
+              <a href="#"><img src="{% static 'images/LOGO.jpg' %}" alt=""></a>
+            </div>
+          </div>
+          <!-- ################################################################################################ -->
+        </section>
+      </div>
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <div class="wrapper row3">
+        <div class="gmap">
+          <div>
+            <h6>NOTRE LOCALISATION</h6>
+          </div>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d13342.825317186114!2d1.2430187967881225!3d6.151413718451783!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sfr!2stg!4v1670623921432!5m2!1sfr!2stg"
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <div class="wrapper row4">
+        <footer id="footer" class="hoc clear">
+          <!-- ################################################################################################ -->
+          <div class="one_quarter first">
+            <h6 class="heading">AKS-T</h6>
+            <p>Organisez vos voyages sans stress ni dépenses inutiles.</p>
+            <p>Rejoignez vos familles, lieu de travail, lieu de missions et autres en toute quiétude.</p>
+          </div>
+          <div id="contact" class="one_quarter">
+            <h6 class="heading">Contact</h6>
+            <nav>
+              <ul class="nospace">
+                <li><a href="index.html"><i class="fa fa-lg fa-home"></i></a></li>
+                <li><a href="#">akstransport@gmail.com</a></li>
+                <li><a href="#">+228 90 00 00 09</a></li>
+
+              </ul>
+            </nav>
+            <ul class="faico clear">
+              <li><a class="faicon-facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+              <li><a class="faicon-twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+              <li><a class="faicon-linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>
+              <li><a class="faicon-google-plus" href="#"><i class="fa fa-google-plus"></i></a></li>
+            </ul>
+          </div>
+          <div class="one_quarter">
+            <h6 class="heading">Notre Histoire</h6>
+            <article>
+              <h2 class="nospace font-x1"><a href="#">Aks-t</a></h2>
+              <time class="font-xs" datetime="2022-11-20"> 20 Novembre 2022</time>
+              <p>AkS-T a démarré ses activités et s'applique chaque jour à vous offrir le meilleur de ses services
+                [&hellip;]</p>
+            </article>
+          </div>
+          <div class="one_quarter">
+            <h6 class="heading">NOS DOMAINES D'ACTIVITE</h6>
+            <ul class="nospace linklist">
+              <li><a href="#">Economie numerique</a></li>
+              <li><a href="#">Messagerie</a></li>
+              <li><a href="#">Mise en relation</a></li>
+              <li><a href="#">Tourisme</a></li>
+            </ul>
+          </div>
+          <!-- ################################################################################################ -->
+        </footer>
+      </div>
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <div class="wrapper row5">
+        <div id="copyright" class="hoc clear">
+          <!-- ################################################################################################ -->
+          <p class="fl_left">Copyright &copy; 2022 - Tout Droit Réservé - <a href="#">www.akstransport.com</a></p>
+          <!-- ################################################################################################ -->
+        </div>
+      </div>
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a>
+      <!-- JAVASCRIPTS -->
+      <script>
+        $(window).scroll(function (event) {
+          // A chaque fois que l'utilisateur va scroller (descendre la page)
+          var y = $(this).scrollTop(); // On récupère la valeur du scroll vertical
+
+          //si cette valeur > à 200 on ajouter la class
+          if (y >= 200) {
+            $('.nav').addClass('fixed');
+          } else {
+            // sinon, on l'enlève
+            $('.nav').removeClass('fixed');
+          }
+        });
+
+      </script>
+      <script src="{% static 'scripts/jquery.min.js' %}"></script>
+      <script src="{% static 'scripts/jquery.backtotop.js' %}"></script>
+      <script src="{% static 'scripts/jquery.mobilemenu.js' %}"></script>
+      <script src="{% static 'scripts/simpleParallax.js' %}"></script>
+    </div>
+  </div>
+</body>
+
+</html>

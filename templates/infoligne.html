@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% extends 'base0.html' %}
+
+
+{% block contenu %}
+<div style="margin: auto;padding: auto; width: 1000px;">
+  
+    
+    <caption><h4>LIGNE : {{ln.ville_dep.nom_ville}} - {{ln.ville_arr.nom_ville}}</h4> </caption>
+    
+    <div class="scrollable">
+      <table id="tableau" class="display">
+        <thead>
+          <tr>
+            <th>DATE ET HEURE DE DEPART</th>
+            <th>COMPAGNIE</th>
+            <th>PRIX (CFA)</th>
+            <th>PLACES DISPONIBLE</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for i in infln %}    
+          <tr>
+            <td> {{i.date_dep}} </td>
+            <td> {{ i.bus_id.compagnie_id.nom_cp }} </td>
+            <td> {{i.prix}} </td>
+            <td> {{i.bus_id.nb_place}} </td>
+            <td>
+              <footer><a class="btn" href="{% url 'client:etape2' i.id %}">Réserver &rsaquo;</a></footer>
+            </td>
+          </tr>
+          {% endfor %}
+    
+        </tbody>
+      </table>
+    </div>
+    <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer>
+    <script>
+      $(document).ready(function () {
+        $('#tableau').DataTable({
+            dom:'f',
+            language: {
+                url: "DataTables/media/french.json"},
+        });
+    });
+    </script>
+    </div>
+{% endblock contenu %}
+    

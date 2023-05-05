@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% extends 'base1.html' %}
+{% load static %}
+
+{% block contenu %}
+
+<div class="bg-contact100">
+    <h1 style="align-items: center;text-align: center; ">RESERVATION</h1>
+    <div class="container-contact100">
+        <div class="wrap-contact100">
+            <div class="contact100-pic js-tilt" data-tilt>
+                <img src="{% static 'images/modele-formulaire-inscription.avif' %}" alt="IMG">
+            </div>
+            <form class="contact100-form validate-form" method="post" action="">
+                
+                <span class="contact100-form-title">
+                    <b>Faites votre réservation</b> 
+                </span>
+                {% csrf_token %}
+                <div class="wrap-input100 validate-input" data-validate="Un Nom est requi.">
+                    {{ form1.nom_clt }}
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Un Prénom est requi">
+                    {{ form1.prenom_clt }}
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Un email valide est requi.">
+                    {{ form1.email_clt }}
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Un numéro de telephone valide est requi">
+                    {{ form1.telephone_clt }}
+                    <span class="focus-input100"></span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Vous devez selectionner le nombre de place">
+                    {{ form1.place }}
+                    <span class="focus-input100"></span>
+                </div>
+                
+                <div class="container-contact100-form-btn">
+                    <button class="contact100-form-btn" type="submit">
+                        Valider
+                    </button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript"></script>
+{% endblock contenu %}
+    

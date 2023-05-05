@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% extends 'base0.html' %}
+
+
+{% block contenu %}
+
+<p></p>
+<div style="margin: auto;padding: auto; width: 1000px;">
+  <p>ETAPE N°1 : CHOIX DU PLAN DE VOYAGE</p>
+    <caption><h1>{{ rdt.date_dep }}</h1></caption>
+    
+    
+    <div class="scrollable">
+      <table id="tableau" class="display">
+        <thead>
+          <tr>
+            <th>LIGNE</th>
+            <th>DATE ET HEURE DE DEPART</th>
+            <th>COMPAGNIE</th>
+            <th>PRIX (CFA)</th>
+            <th>PLACES DISPONIBLE</th>
+            <th>DECISION</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for i in infln %}    
+          <tr>
+            <td> {{i.ligne_id.ville_dep.ville_id.nom_ville}} - {{i.ligne_id.ville_arr.ville_id.nom_ville}} </td>
+            <td> {{i.date_dep}} </td>
+            <td> {{ i.bus_id.compagnie_id.nom_cp }} </td>
+            <td> {{i.prix}} </td>
+            <td> {{i.bus_id.nb_place}} </td>
+            <td>
+              <footer><a class="btn" href="{% url 'client:etape2' %}">Choisir &rsaquo;</a></footer>
+            </td>
+          </tr>
+          {% endfor %}
+    
+        </tbody>
+      </table>
+    </div>
+    <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer>
+    
+    <script>
+      $(document).ready(function () {
+        $('#tableau').DataTable({
+            dom:'f',
+            language: {
+                url: "DataTables/media/french.json"},
+        });
+    });
+    </script>
+    </div>
+{% endblock contenu %}
+    
