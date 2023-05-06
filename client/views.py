@@ -212,3 +212,15 @@ def modifier_billet(request, billet_id):
         'billet': billet
     }
     return render(request, 'modification2.html', context)
+
+def lescompagnies_view(request):
+    context={
+        'comp':comp,
+             }
+    return render(request,'lescompagnies.html',context)
+
+def lacompagnie_view(request,cp_id):
+    context={
+        'cp':get_object_or_404(Compagnie, pk=cp_id),
+             }
+    return render(request,'lacompagnie.html',context)

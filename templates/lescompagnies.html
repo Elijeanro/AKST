@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% extends 'base0.html' %}
+
+
+{% block contenu %}
+<div style="margin: auto;padding: auto; width: 1000px;">
+  
+    
+    <caption><h4>LISTE DES COMPAGNIES</h4> </caption>
+    
+    <div class="scrollable">
+      <table id="tableau" class="display">
+        <thead>
+          <tr>
+            <th>COMPAGNIE</th>
+            <th>SIEGE</th>
+            <th>TELEPHONE</th>
+            <th>EMAIL</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for c in comp %}    
+          <tr>
+            <td> {{ c.nom_cp }} </td>
+            <td> {{ c.siege_cp }} </td>
+            <td> {{ c.telephone_cp }} </td>
+            <td> {{ c.email_cp }} </td>
+            <td>
+              <footer><a class="btn" href="{% url 'client:lacompagnie' c.id %}">Réserver &rsaquo;</a></footer>
+            </td>
+          </tr>
+          {% endfor %}
+    
+        </tbody>
+      </table>
+    </div>
+    <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer>
+    <script>
+      $(document).ready(function () {
+        $('#tableau').DataTable({
+            dom:'f',
+            language: {
+                url: "DataTables/media/french.json"},
+        });
+    });
+    </script>
+    </div>
+{% endblock contenu %}
+    

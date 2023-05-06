@@ -16,5 +16,7 @@ urlpatterns = [
     path('annulation3/<int:billet_id>/',views.annuler_billet,name='annulation3'),
     path('modification1/',views.recherche2_view,name='modification1'),
     path('modification2/<int:billet_id>/',views.modifier_billet,name='modification2'),
+    path('compagnies/',views.lescompagnies_view,name='lescompagnies'),
+    path('compagnie/<int:cp_id>/',views.lacompagnie_view, name='lacompagnie'),
 ]
 
