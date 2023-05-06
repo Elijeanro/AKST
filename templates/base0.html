@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+<html lang="fr">
+
+<head>
+  <title>
+    {% block titre %}
+
+    {% endblock titre %}
+  </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="{% static 'layout.css' %}" type="text/css" media="all">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/framework.css' %}">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap4/assets/css/docs.min.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap5/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap5/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+  <script type="text/javascript" src="{% static 'bootstrap5/js/bootstrap.min.js' %}"></script>
+  <script type="text/javascript" src=" {% static 'DataTables/media/js/jquery.js' %} "></script>
+  <script type="text/javascript" src=" {% static 'DataTables/media/js/jquery.dataTables.min.js' %} "></script>
+  <script type="text/javascript" src=" {% static 'DataTable/result.js' %} "></script>
+  <link rel="stylesheet" type="text/css" href=" {% static 'DataTables/media/css/jquery.dataTables.min.css' %} ">
+
+  {% block headcomplement %}
+
+  {% endblock headcomplement %}
+
+
+
+</head>
+
+<body id="top">
+
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+
+  <div class="wrapper row0">
+
+    <div id="topbar" class="hoc clear">
+      <!-- ################################################################################################ -->
+      <div class="fl_left">
+        <ul>
+          <li><i class="fa fa-phone"></i> +228 90 00 00 09</li>
+          <li><i class="fa fa-envelope-o"></i> akstransport@gmail.com</li>
+        </ul>
+      </div>
+      <!-- ################################################################################################ -->
+    </div>
+  </div>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <div class="wrapper row1">
+      <div class="wrapper bgded overlay" style="background-image:url('../images/demo/backgrounds/01.png');height: 5em;">
+        <img src="{% static 'images/logo1.png' %}" alt="">
+              {% now 'd/m/Y H:i:s' %}
+  
+      </div><br><br>  
+    
+    {% block contenu %}
+
+    {% endblock contenu %}
+  </div>
+</body>
+
+</html>

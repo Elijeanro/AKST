@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% extends 'base0.html' %}
+
+
+{% block contenu %}
+<div style="margin: auto;padding: auto; width: 1000px; font-size: 25px;">
+    <h2>Billet de voyage
+        <p>Ligne : {% if infoln %}{{ infoln.ligne_id.ville_dep.nom_ville }} -
+            {{ infoln.ligne_id.ville_arr.nom_ville }}{% endif %}</p>
+    </h2>
+    <p><strong>Nom :</strong> {{ billet.nom_clt }}</p>
+    <p><strong>Prénom :</strong> {{ billet.prenom_clt }}</p>
+    <p><strong>Email :</strong> {{ billet.email_clt }}</p>
+    <p><strong>Téléphone :</strong> {{ billet.telephone_clt }}</p>
+    <p><strong>Code du billet :</strong> {{ billet.code_billet }}</p>
+    <p><strong>Prix unitaire :</strong> {{ billet.prix }} francs CFA</p>
+    <p><strong>Nombre de places :</strong> {{ billet.place }}</p>
+    <p><strong>Montant total :</strong> {{ billet.montant_billet }} francs CFA</p>
+    <p><strong>Etat du billet :</strong>
+        {% if etat %}
+        {{etat.libelle}}
+        {% endif %}
+    </p>
+    <p><strong>Billet valide :</strong> {{billet.bl_valide}}</p>
+    <p><strong>Date et heure de départ :</strong> {% if infoln %}{{ infoln.date_dep|date:"d-m-Y H:i:s" }}{% endif %}</p>
+    <form method="post" action="{% url 'client:annulation3' billet.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="billet_id" value="{{ billet.id }}">
+        <button type="submit" class="btn btn-danger">Annuler le billet</button>
+    </form><br>
+    
+    <footer><a class="btn" href="{% url 'client:annulation1' %} ">&laquo; Revenir en arrière</a></footer>
+    
+    <script>
+      $(document).ready(function () {
+        $('#tableau').DataTable({
+            dom:'f',
+            language: {
+                url: "DataTables/media/french.json"},
+        });
+    });
+    </script>
+    </div>
+{% endblock contenu %}
+    
+

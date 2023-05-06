@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{% extends 'base0.html' %}
+
+
+{% block contenu %}
+<div class="top">
+
+  <!-- ################################################################################################ -->
+  <div class="wrapper row3">
+    <main class="hoc container clear">
+      <!-- main body -->
+      <!-- ################################################################################################ -->
+      <div class="sidebar one_quarter first">
+        <!-- ################################################################################################ -->
+        <h6>Liste des lignes disponibles</h6><br>
+        <nav class="sdb_holder">
+          <ul>
+
+            {% for i in lignes %}
+            <li>{{i.ville_dep.nom_ville}} - {{i.ville_arr.nom_ville}}</li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </div>
+      <!-- ################################################################################################ -->
+      <!-- ################################################################################################ -->
+      <div class="content three_quarter">
+        <!-- ################################################################################################ -->
+        <h1>Liste des voyages</h1>
+        <!-- ################################################################################################ -->
+        <h2  class="heading">Comment faire ?</h2>
+        <img class="imgr borderedbox inspace-5" src="../images/demo/imgr.gif" alt="">
+        <p>Aliquatjusto quisque nam consequat doloreet vest orna partur scetur portortis nam. Metadipiscing eget facilis
+          elit sagittis felisi eger id justo maurisus convallicitur.</p>
+        <p>Dapiensociis <a href="#">temper donec auctortortis cumsan</a> et curabitur condis lorem loborttis leo.
+          Ipsumcommodo libero nunc at in velis tincidunt pellentum tincidunt vel lorem.</p>
+        <img class="imgl borderedbox inspace-5" src="../images/demo/imgl.gif" alt="">
+        <p>This is a W3C compliant free website template from <a href="https://www.os-templates.com/"
+            title="Free Website Templates">OS Templates</a>. For full terms of use of this template please read our <a
+            href="https://www.os-templates.com/template-terms">website template licence</a>.</p>
+        <p>You can use and modify the template for both personal and commercial use. You must keep all copyright
+          information and credit links in the template and associated files. For more website templates visit our <a
+            href="https://www.os-templates.com/">free website templates</a> section.</p>
+        <p>Portortornec condimenterdum eget consectetuer condis consequam pretium pellus sed mauris enim. Puruselit
+          mauris nulla hendimentesque elit semper nam a sapien urna sempus.</p><br><br>
+        <h1  class="heading">Choisissez votre ligne</h1>
+
+      </div>
+    </main>
+  </div>
+  <div class="scrollable">
+    <div style="margin: auto;padding: auto; width: 1100px;">
+
+
+      <!-- <caption>
+        <h4>Choisissez votre ligne</h4>
+      </caption> -->
+
+      <!-- <div class="scrollable"> -->
+      <table id="tableau" class="display">
+        <thead>
+          <tr>
+            <th>DATE ET HEURE DE DEPART</th>
+            <th>LIGNE</th>
+            <th>COMPAGNIE</th>
+            <th>PRIX (CFA)</th>
+            <th>PLACES DISPONIBLE</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in infln %}
+          <tr>
+            <td> {{i.date_dep}} </td>
+            <td>{{i.ligne_id.ville_dep.nom_ville}} - {{i.ligne_id.ville_arr.nom_ville}}</td>
+            <td> {{ i.bus_id.compagnie_id.nom_cp }} </td>
+            <td> {{i.prix}} </td>
+            <td> {{i.bus_id.nb_place}} </td>
+            <td>
+              <footer><a class="btn" href="{% url 'client:etape2' i.id %}">Réserver &rsaquo;</a></footer>
+            </td>
+          </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <!-- ################################################################################################ -->
+  <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer>
+  <script>
+    $(document).ready(function () {
+      $('#tableau').DataTable({
+        dom: 'f',
+        language: {
+          url: "DataTables/media/french.json"
+        },
+      });
+    });
+  </script>
+</div>
+{% endblock contenu %}
