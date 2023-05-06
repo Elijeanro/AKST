@@ -34,7 +34,8 @@ def accueil_view(request):
 def suggestionForm(request):
     form=forms.SuggestionForm(request.POST)
     if form.is_valid():
-        form.save() 
+        form.save()
+        form=forms.SuggestionForm() 
     context={'form':form,}
     return render(request,'suggestion.html',context)
 
