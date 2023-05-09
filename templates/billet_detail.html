@@ -21,7 +21,8 @@
     </p>
     <p><strong>Billet valide :</strong> {{billet.bl_valide}}</p>
     <p><strong>Date et heure de départ :</strong> {% if infoln %}{{ infoln.date_dep|date:"d-m-Y H:i:s" }}{% endif %}</p>
-    
+    <a href="{% url 'client:generate_pdf' billet_id=billet.id %}">Télécharger en PDF</a>
+
     <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer>
     <script>
       $(document).ready(function () {

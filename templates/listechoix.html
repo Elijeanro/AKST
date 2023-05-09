@@ -49,19 +49,14 @@
     </main>
   </div>
   <div class="scrollable">
+    
+    {% for l in lignes %}
     <div style="margin: auto;padding: auto; width: 1100px;">
-
-
-      <!-- <caption>
-        <h4>Choisissez votre ligne</h4>
-      </caption> -->
-
-      <!-- <div class="scrollable"> -->
+      <h5>LIGNE : {{l.ville_dep.nom_ville}} - {{l.ville_arr.nom_ville}} </h5>
       <table id="tableau" class="display">
         <thead>
           <tr>
             <th>DATE ET HEURE DE DEPART</th>
-            <th>LIGNE</th>
             <th>COMPAGNIE</th>
             <th>PRIX (CFA)</th>
             <th>PLACES DISPONIBLE</th>
@@ -69,10 +64,9 @@
           </tr>
         </thead>
         <tbody>
-          {% for i in infln %}
+          {% for i in l.infln %}
           <tr>
             <td> {{i.date_dep}} </td>
-            <td>{{i.ligne_id.ville_dep.nom_ville}} - {{i.ligne_id.ville_arr.nom_ville}}</td>
             <td> {{ i.bus_id.compagnie_id.nom_cp }} </td>
             <td> {{i.prix}} </td>
             <td> {{i.bus_id.nb_place}} </td>
@@ -85,6 +79,8 @@
         </tbody>
       </table>
     </div>
+    {% endfor %}
+      
   </div>
   <!-- ################################################################################################ -->
   <!-- ################################################################################################ -->

@@ -27,7 +27,7 @@
             <td> {{ c.telephone_cp }} </td>
             <td> {{ c.email_cp }} </td>
             <td>
-              <footer><a class="btn" href="{% url 'client:lacompagnie' c.id %}">Réserver &rsaquo;</a></footer>
+              <footer><a class="btn" href="{% url 'client:lacompagnie' c.id %}">Voir plus &rsaquo;</a></footer>
             </td>
           </tr>
           {% endfor %}
@@ -35,7 +35,11 @@
         </tbody>
       </table>
     </div>
-    <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer>
+    <div class="container-contact100-form-btn" style="width: 45%;">
+      <button class="contact100-form-btn">
+          <a class="contact100-form-btn" href="{% url 'client:accueil' %} ">&laquo; Revenir à la page d'accueil</a>
+      </button>
+    </div>
     <script>
       $(document).ready(function () {
         $('#tableau').DataTable({

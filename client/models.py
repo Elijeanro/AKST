@@ -7,6 +7,7 @@ from django.db.models.query import QuerySet
 
 class Suggestion(models.Model):
     email=models.CharField(max_length=20)
+    destinataire=models.CharField(max_length=30, default='Plateforme')
     message=models.TextField(max_length=500)
     date=models.DateTimeField(auto_now_add=True)
     def __str__(self):

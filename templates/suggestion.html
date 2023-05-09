@@ -23,18 +23,25 @@ AKS-T | Suggestions
                 <img src="https://i.imgur.com/VRFiMzM.png" alt="IMG">
             </div>
             <form class="contact100-form validate-form" method="post">
-                
+
                 <span class="contact100-form-title">
-                   Faites nous part de vos <b>suggestions</b> 
+                    Faites nous part de vos <b>suggestions</b>
                 </span>
                 {% csrf_token %}
-                <div class="wrap-input100 validate-input" data-validate="Un email valide est requi. Exemple: ex@abc.xyz">
-                    
+                <div class="wrap-input100 validate-input"
+                    data-validate="Un email valide est requi. Exemple: ex@abc.xyz">
+
                     {{ form.email }}
                     <span class="focus-input100"></span>
                     <span class="symbol-input100">
                         <i class="fa fa-envelope" aria-hidden="true"></i>
                     </span>
+                </div>
+                <div class="wrap-input100 validate-input" data-validate="Un destinataire est requi.">
+                    <p style="font-size: 23px; color: #fdfafa;">Destiné à </p>
+                    {{ form.destinataire }}
+                    <span class="focus-input100"></span>
+
                 </div>
                 <div class="wrap-input100 validate-input" data-validate="Un message est requi">
                     {{ form.message }}
@@ -45,12 +52,15 @@ AKS-T | Suggestions
                         Envoyer
                     </button>
                 </div>
-                
             </form>
         </div>
+        <div class="container-contact100-form-btn" style="width: 45%;">
+            <button class="contact100-form-btn">
+                <a class="contact100-form-btn" href="{% url 'client:accueil' %} ">&laquo; Revenir à la page d'accueil</a>
+            </button>
+        </div>
     </div>
+    <script type="text/javascript"></script>
+
 </div>
-<script type="text/javascript"></script>
-
-
-{% endblock contenu %}
+    {% endblock contenu %}

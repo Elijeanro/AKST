@@ -34,16 +34,25 @@ values = InfoLigne.objects.filter(date_dep__gt=datetime.datetime.now()).values_l
 # Créer une liste de tuples à partir de la liste de valeurs, en utilisant une compréhension de liste
 choices = [(value[0], value[1]) for value in values]
 
-
-
+destinataires=[
+    ('Plateforme','La Plateforme'),
+    ('Nagode', 'Compagnie Nagode'),
+    ('Cheval Blanc', 'Compagnie Cheval Blanc'),
+    ('Rakieta', 'Compagnie Rakieta'),
+    ('LK', 'Compagnie LK'),
+    ('ETRAB', 'Compagnie ETRAB'),
+    ('Adji Transport', 'Compagnie Adji Transport'),
+    ('DC10', 'Compagnie DC10')
+]
 
 
 class SuggestionForm(forms.ModelForm):
     class Meta:
         model=Suggestion
-        fields=('email','message')
+        fields=('email','destinataire','message')
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'input100', 'placeholder':'Email'}),
+            'destinataire': forms.Select(attrs={'class': 'input100', 'placeholder':'Destiné à'}, choices=destinataires), 
             'message': forms.Textarea(attrs={'class': 'input100', 'placeholder':'Saisissez Votre Message...'}),
         }
 
@@ -84,13 +93,5 @@ class ContactForm(forms.Form):
         )
 class RechercheBillet(forms.Form):
     code_billet=forms.CharField(widget=forms.TextInput(attrs={'class': 'input100', 'placeholder':'Code'})
-        )
-class MonForm(forms.ModelForm):
-    class Meta:
-        model=Suggestion
-        fields=['email','message']
-        
-    def __init__(self, email,message) -> None:
-        super().__init__(email,message)
-        
+        )        
     
