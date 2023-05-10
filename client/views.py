@@ -77,7 +77,7 @@ def update_places_disponibles(infoligne_id, nb_places_res):
     """
     infoligne = InfoLigne.objects.get(pk=infoligne_id)
     infoligne.place_restante -= nb_places_res
-    infoligne.bus_id.save()
+    infoligne.save()
 
 
 def reservation2_view(request, res_id):
