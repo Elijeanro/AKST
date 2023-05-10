@@ -80,40 +80,48 @@ def update_places_disponibles(infoligne_id, nb_places_res):
     infoligne.bus_id.save()
 
 
-def reservation2_view(request,res_id):
+def reservation2_view(request, res_id):
+    res = get_object_or_404(InfoLigne, pk=res_id)
     if request.method == 'POST':
         formulaire = forms.BilletForm(request.POST)
-        context={
-            'res':get_object_or_404(InfoLigne, pk=res_id),
-            'inf':infln.get(pk=res_id),
-            'form1':formulaire,
-            'lecode':lecode,
-            'prix':InfoLigne.objects.filter(id=res_id).values_list('prix',flat=True),
+        context = {
+            'res': res,
+            'inf': infln.get(pk=res_id),
+            'form1': formulaire,
+            'lecode': lecode,
+            'prix': InfoLigne.objects.filter(id=res_id).values_list('prix', flat=True),
         }
         if formulaire.is_valid():
             donnees = formulaire.cleaned_data
-            montant= models.Billet(place=donnees['place'],prix=context['prix'])
-            billet = forms.Billet.objects.create(
-                nom_clt=donnees['nom_clt'], 
-                prenom_clt=donnees['prenom_clt'],
-                email_clt=donnees['email_clt'],
-                telephone_clt=donnees['telephone_clt'],
-                place=donnees['place'],
-                code_billet=lecode, # une fonction qui génère un code unique pour chaque billet
-                infoligne_id=context['inf'],
-                prix=context['prix'],
-                montant_billet=montant.produit,
-                bl_valide=True,
-            )
-            billet.save()
-            update_places_disponibles(context['inf'].pk, donnees['place'])
-            return redirect(reverse('client:billet_detail_view',args=[billet.pk]))
+            if donnees['place'] <= res.place_restante:
+                montant = models.Billet(place=donnees['place'], prix=context['prix'])
+                billet = forms.Billet.objects.create(
+                    nom_clt=donnees['nom_clt'],
+                    prenom_clt=donnees['prenom_clt'],
+                    email_clt=donnees['email_clt'],
+                    telephone_clt=donnees['telephone_clt'],
+                    place=donnees['place'],
+                    code_billet=lecode, # une fonction qui génère un code unique pour chaque billet
+                    infoligne_id=context['inf'],
+                    prix=context['prix'],
+                    montant_billet=montant.produit,
+                    bl_valide=True,
+                )
+                billet.save()
+                update_places_disponibles(context['inf'].pk, donnees['place'])
+                return redirect(reverse('client:billet_detail_view', args=[billet.pk]))
+            else:
+                max_place = res.place_restante
+                message = f"Le nombre de places que vous pouvez choisir est maximum {max_place}"
+                context['message'] = message
+        else:
+            context['form1'] = formulaire
     else:
         formulaire = forms.BilletForm()
-    context={
-            'res':get_object_or_404(InfoLigne, pk=res_id),
-            'inf':infln.get(pk=res_id),
-            'form1':formulaire,
+        context = {
+            'res': get_object_or_404(InfoLigne, pk=res_id),
+            'inf': infln.get(pk=res_id),
+            'form1': formulaire,
         }
     return render(request, 'reservation_etape2.html', context)
 

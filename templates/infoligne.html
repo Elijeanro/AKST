@@ -20,16 +20,20 @@
           </tr>
         </thead>
         <tbody>
-        {% for i in infln %}    
+        {% for i in infln %}  
+          
+          {% if i.place_restante > 0 %}
           <tr>
             <td> {{i.date_dep}} </td>
             <td> {{ i.bus_id.compagnie_id.nom_cp }} </td>
             <td> {{i.prix}} </td>
-            <td> {{i.bus_id.nb_place}} </td>
+            <td> {{i.place_restante}} </td>
             <td>
               <footer><a class="btn" href="{% url 'client:etape2' i.id %}">Réserver &rsaquo;</a></footer>
             </td>
           </tr>
+          {% endif %}
+              
           {% endfor %}
     
         </tbody>
