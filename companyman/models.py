@@ -8,6 +8,7 @@ class Bus(models.Model):
     
     
 class Ligne(models.Model):
+    libelle=models.CharField(max_length=40, null=True)
     ville_dep=models.ForeignKey(Ville,on_delete=models.DO_NOTHING,related_name='depart' )
     ville_arr=models.ForeignKey(Ville,on_delete=models.DO_NOTHING,related_name='arrivee' )
     
@@ -18,12 +19,13 @@ class InfoLigne(models.Model):
     prix=models.FloatField(default=0)
     bus_id=models.ForeignKey(Bus, on_delete=models.DO_NOTHING) 
     place_restante=models.PositiveSmallIntegerField(default=60)
+    compagnie_id=models.ForeignKey(Compagnie, on_delete=models.DO_NOTHING, null=True)
    
 class Utilisateur(models.Model):
     grade_id=models.ForeignKey(Grade, on_delete=models.DO_NOTHING)
     nom_user=models.CharField(max_length=30)
     prenom_user=models.CharField(max_length=50)
     email_user=models.CharField(max_length=60)
-    id_user=models.CharField(max_length=10)
+    nom_utilisateur=models.CharField(max_length=10)
     pw_user=models.CharField(max_length=12)
     compagnie_id=models.ForeignKey(Compagnie, on_delete=models.DO_NOTHING)

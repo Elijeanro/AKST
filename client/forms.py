@@ -74,7 +74,7 @@ class BilletForm(forms.Form):
             'class': 'input20',
             'min':'1', 
             'max':'5',
-            'placeholder':'Nombre de place'})
+            'placeholder':'Place'})
         )
     
 class ContactForm(forms.Form):

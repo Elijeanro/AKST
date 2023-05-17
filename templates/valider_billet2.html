@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+{% extends 'base2.html' %}
+
+
+{% block titre %}
+    
+{% endblock titre %}
+
+
+{% block contenu %}
+<div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-10 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <!-- <div class="col-lg-6 d-none d-lg-block bg-login-image"></div> -->
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">Billet de voyage
+                                        <p>Ligne : {% if infoln %}{{ infoln.ligne_id.ville_dep.nom_ville }} -
+                                            {{ infoln.ligne_id.ville_arr.nom_ville }}{% endif %}</p></h1>
+                                    
+                                    <p><strong>Nom :</strong> {{ billet.nom_clt }}</p>
+                                    <p><strong>Prénom :</strong> {{ billet.prenom_clt }}</p>
+                                    <p><strong>Email :</strong> {{ billet.email_clt }}</p>
+                                    <p><strong>Téléphone :</strong> {{ billet.telephone_clt }}</p>
+                                    <p><strong>Code du billet :</strong> {{ billet.code_billet }}</p>
+                                    <p><strong>Prix unitaire :</strong> {{ billet.prix }} francs CFA</p>
+                                    <p><strong>Nombre de places :</strong> {{ billet.place }}</p>
+                                    <p><strong>Montant total :</strong> {{ billet.montant_billet }} francs CFA</p>
+                                    <p><strong>Etat du billet :</strong>
+                                        {% if etat %}
+                                        {{etat.libelle}}
+                                        {% endif %}
+                                    </p>
+                                    <p><strong>Billet valide :</strong> {{billet.bl_valide}}</p>
+                                    <p><strong>Date et heure de départ :</strong> {% if infoln %}{{ infoln.date_dep|date:"d-m-Y H:i:s" }}{% endif %}</p>
+                                    <form method="post" action="{% url 'companyman:validation_billet3' billet.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="billet_id" value="{{ billet.id }}">
+                                        <button type="submit" class="btn btn-danger">Annuler le billet</button>
+                                    </form><br>
+                                    
+                                    
+                                    <button class="btn btn-primary btn-user btn-block">
+                                        <a class="btn" href="{% url 'companyman:validation_billet1' %} ">&laquo; Valider un autre billet</a>
+                                    </button>
+                                </div>
+                                    
+                                    
+                                    
+                                    <hr>
+                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock contenu %}
+    
+    
