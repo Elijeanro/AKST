@@ -15,37 +15,59 @@ comp= Compagnie.objects.all()
 bus= Bus.objects.all()
 dnow= datetime.date.today()
 utilisateur=Utilisateur.objects.all()
-
 def connexion_compagnie(request, nom_comp):
-    comp_id = comp.filter(nom_cp=nom_comp).values_list('id', flat=True)
+    comp_id = Compagnie.objects.filter(nom_cp=nom_comp).values_list('id', flat=True).first()
     message = ''
+    
     if request.method == 'POST':
         connexion = RechercherUtilisateur(request.POST)
+        
         if connexion.is_valid():
             donnees = connexion.cleaned_data
             username = donnees['nom_utilisateur']
             password = donnees['pw_user']
-            user_id = utilisateur.filter(nom_utilisateur=username, pw_user=password).values_list('id', flat=True)
+            user_id = Utilisateur.objects.filter(nom_utilisateur=username, pw_user=password).values_list('id', flat=True).first()
+            
             context = {'form': connexion}
+            
             if user_id is not None:
-                user_cp_id = utilisateur.filter(nom_utilisateur=username, pw_user=password).values_list('compagnie_id', flat=True)
+                user_cp_id = Utilisateur.objects.filter(nom_utilisateur=username, pw_user=password).values_list('compagnie_id', flat=True).first()
+                user_cp_grade = Utilisateur.objects.filter(nom_utilisateur=username, pw_user=password).values_list('grade_id', flat=True).first()
+                
                 if user_cp_id == comp_id:
-                    return redirect(reverse('companyman:espace_compagnie', args=[comp_id]))
+                    if user_cp_grade == 2:
+                        return redirect(reverse('companyman:espace_compagnie_manager', args=[comp_id]))
+                    elif user_cp_grade == 3:
+                        return redirect(reverse('companyman:espace_compagnie_agent', args=[comp_id]))
                 else:
-                    message = 'Vous n''êtes pas de cette compagnie '
+                    message = "Vous n'êtes pas de cette compagnie."
                     return render(request, 'err_msg.html', {'message': message})
             else:
-                message = 'Identifiant ou mot de passe incorrect '
+                message = 'Identifiant ou mot de passe incorrect.'
                 return render(request, 'err_msg.html', {'message': message})
         else:
             context['form'] = connexion
     else:
         connexion = RechercherUtilisateur()
+    
     return render(request, 'connexion_compagnie.html', {'form': connexion, 'message': message})
 
 
+def espace_compagnie_manager(request, comp_id):
+    compagnie = get_object_or_404(Compagnie, pk=comp_id)
+    user = Utilisateur.objects.filter(compagnie_id=comp_id).first()
+    
+    if user is None:
+        message = "Vous n'êtes pas autorisé à accéder à cet espace !"
+        return render(request, 'err_msg.html', {'message': message})
 
-def espace_compagnie(request, comp_id):
+    lignes = Ligne.objects.all()
+    context = {'compagnie': compagnie, 'lignes': lignes}
+    
+    return render(request, 'espace_compagnie_manager.html', context)
+
+
+def espace_compagnie_agent(request, comp_id):
     # Vérifier si l'utilisateur est connecté
     # if not request.user.is_authenticated:
     #     return redirect('login')
@@ -53,14 +75,14 @@ def espace_compagnie(request, comp_id):
     # Vérifier si l'utilisateur appartient à la compagnie correspondante
     compagnie = get_object_or_404(Compagnie, pk=comp_id)
     if request.user.compagnie != compagnie:
-        message = "Vous n'êtes pas autorisé à accéder à cette page."
+        message = "Vous n'êtes pas autorisé à accéder à cet espace!."
         return render(request, 'err_msg.html', {'message': message})
 
     # Récupérer les informations sur les lignes de la compagnie
     lignes = Ligne.objects.filter(compagnie=compagnie)
 
     context = {'compagnie': compagnie, 'lignes': lignes}
-    return render(request, 'espace_compagnie.html', context)
+    return render(request, 'espace_compagnie_agent.html', context)
 
 
 def creer_utilisateur(request,comp_id):
@@ -94,11 +116,11 @@ def creer_utilisateur(request,comp_id):
     return render(request, 'creer_utilisateur.html', context)
 
 
-@login_required
-def ajouter_infoligne(request):
+# @login_required
+def ajouter_infoligne(request,comp_id):
     leslignes=[(l.id,l.libelle) for l in Ligne.objects.all()]
     # Filtrer les bus en fonction de la compagnie connectée
-    compagnie_id = request.utilisateur.compagnie_id  # Supposons que l'utilisateur soit un objet de modèle User avec une relation OneToOneField à une compagnie
+    compagnie_id = get_object_or_404(Compagnie,pk=comp_id)  
     lesbus = Bus.objects.filter(compagnie_id=compagnie_id)
     form=InfoligneForm(request.POST or None)
     form.fields['bus_id'].queryset = lesbus  # Définir la queryset de bus pour le champ "bus_id" du formulaire
@@ -160,45 +182,3 @@ def valider_billet(request, billet_id):
     billet.save()
 
     return redirect('companyman:validation_billet3', billet_id=billet.id)
-
-
-def compagnie_view(request):
-    # context = {
-    #     "ville":ville,
-    #     "ligne": ligne,
-    #     "infln": infln,
-    #     "comp": comp,
-    #     "lesbus": bus,
-    #     "dnow": dnow,
-    # }
-    # template = loader.get_template("index.html")
-    # return HttpResponse(template.render(context, request))
-    return HttpResponse('Ma compagnie')
-
-def ville_view(request):
-    # context = {
-    #     "ville":ville,
-    #     "ligne": ligne,
-    #     "infln": infln,
-    #     "comp": comp,
-    #     "lesbus": bus,
-    #     "dnow": dnow,
-    # }
-    # template = loader.get_template("index.html")
-    # return HttpResponse(template.render(context, request))
-    return HttpResponse('La liste des Villes')
-
-def grade_view(request):
-    # context = {
-    #     "ville":ville,
-    #     "ligne": ligne,
-    #     "infln": infln,
-    #     "comp": comp,
-    #     "lesbus": bus,
-    #     "dnow": dnow,
-    # }
-    # template = loader.get_template("index.html")
-    # return HttpResponse(template.render(context, request))
-    return HttpResponse('La liste des grades')
-
-
