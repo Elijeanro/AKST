@@ -68,20 +68,16 @@ def espace_compagnie_manager(request, comp_id):
 
 
 def espace_compagnie_agent(request, comp_id):
-    # Vérifier si l'utilisateur est connecté
-    # if not request.user.is_authenticated:
-    #     return redirect('login')
-
-    # Vérifier si l'utilisateur appartient à la compagnie correspondante
     compagnie = get_object_or_404(Compagnie, pk=comp_id)
-    if request.user.compagnie != compagnie:
-        message = "Vous n'êtes pas autorisé à accéder à cet espace!."
+    user = Utilisateur.objects.filter(compagnie_id=comp_id).first()
+    
+    if user is None:
+        message = "Vous n'êtes pas autorisé à accéder à cet espace !"
         return render(request, 'err_msg.html', {'message': message})
 
-    # Récupérer les informations sur les lignes de la compagnie
-    lignes = Ligne.objects.filter(compagnie=compagnie)
-
+    lignes = Ligne.objects.all()
     context = {'compagnie': compagnie, 'lignes': lignes}
+    
     return render(request, 'espace_compagnie_agent.html', context)
 
 
