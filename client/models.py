@@ -18,7 +18,7 @@ class EtatBillet(models.Model):
 class Billet(models.Model):
     nom_clt=models.CharField(max_length=30)
     prenom_clt=models.CharField(max_length=50)
-    email_clt=models.CharField(max_length=60)
+    email_clt=models.CharField(max_length=60, blank=True, null=True)
     telephone_clt=PhoneNumberField(region='TG', # Limite le champ aux numéros américains
         blank=True, # Autorise le champ à être vide
         null=True, #Autorise le champ à être nul

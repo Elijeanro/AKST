@@ -15,8 +15,10 @@ comp= Compagnie.objects.all()
 bus= Bus.objects.all()
 dnow= datetime.date.today()
 utilisateur=Utilisateur.objects.all()
+
 def connexion_compagnie(request, nom_comp):
     comp_id = Compagnie.objects.filter(nom_cp=nom_comp).values_list('id', flat=True).first()
+    comp=Compagnie.objects.filter(nom_cp=nom_comp)
     message = ''
     
     if request.method == 'POST':
@@ -36,7 +38,7 @@ def connexion_compagnie(request, nom_comp):
                 
                 if user_cp_id == comp_id:
                     if user_cp_grade == 2:
-                        return redirect(reverse('companyman:espace_compagnie_manager', args=[comp_id]))
+                        return redirect(reverse('companyman:espace_compagnie_manager', args=[user_id]))
                     elif user_cp_grade == 3:
                         return redirect(reverse('companyman:espace_compagnie_agent', args=[comp_id]))
                 else:
@@ -50,34 +52,39 @@ def connexion_compagnie(request, nom_comp):
     else:
         connexion = RechercherUtilisateur()
     
-    return render(request, 'connexion_compagnie.html', {'form': connexion, 'message': message})
+    return render(request, 'connexion_compagnie.html', {'form': connexion, 'message': message, 'comp':comp})
 
 
-def espace_compagnie_manager(request, comp_id):
-    compagnie = get_object_or_404(Compagnie, pk=comp_id)
-    user = Utilisateur.objects.filter(compagnie_id=comp_id).first()
+def espace_compagnie_manager(request, user_id):
+    user = get_object_or_404(Utilisateur, pk=user_id)
+    user_comp_id = Utilisateur.objects.filter(id=user_id).values_list('compagnie_id',flat=True).first()
     
-    if user is None:
+    comp = Compagnie.objects.filter(id=user_comp_id).first()
+
+    if user is None or comp is None:
         message = "Vous n'êtes pas autorisé à accéder à cet espace !"
         return render(request, 'err_msg.html', {'message': message})
 
     lignes = Ligne.objects.all()
-    context = {'compagnie': compagnie, 'lignes': lignes}
-    
+    context = {'utilisateur': user, 'lignes': lignes, 'comp': comp}
+
     return render(request, 'espace_compagnie_manager.html', context)
 
 
-def espace_compagnie_agent(request, comp_id):
-    compagnie = get_object_or_404(Compagnie, pk=comp_id)
-    user = Utilisateur.objects.filter(compagnie_id=comp_id).first()
+
+def espace_compagnie_agent(request, user_id):
+    user = get_object_or_404(Utilisateur, pk=user_id)
+    user_comp_id = Utilisateur.objects.filter(id=user_id).values_list('compagnie_id',flat=True).first()
     
-    if user is None:
+    comp = Compagnie.objects.filter(id=user_comp_id).last()
+
+    if user is None or comp is None:
         message = "Vous n'êtes pas autorisé à accéder à cet espace !"
         return render(request, 'err_msg.html', {'message': message})
 
     lignes = Ligne.objects.all()
-    context = {'compagnie': compagnie, 'lignes': lignes}
-    
+    context = {'utilisateur': user, 'lignes': lignes, 'comp': comp}
+
     return render(request, 'espace_compagnie_agent.html', context)
 
 
@@ -86,7 +93,7 @@ def creer_utilisateur(request,comp_id):
     if request.method == 'POST':
         formulaire = UtilisateurForm(request.POST)
         context = {
-            'compagnie': compagnie,
+            'comp': compagnie,
             'form': formulaire,
         }
         if formulaire.is_valid():
@@ -100,14 +107,16 @@ def creer_utilisateur(request,comp_id):
                 pw_user=donnees['pw_user'],
                 compagnie_id=comp_id,
             )
-            user.save()
-            return redirect(reverse('companyman:user_detail_view', args=[user.pk]))
+            if donnees['pw_user']==donnees['pw_user2']:
+                user.save()
+                return redirect(reverse('companyman:user_detail_view', args=[user.pk]))
         else:
             context['form'] = formulaire
     else:
         formulaire = UtilisateurForm()
         context = {
             'form': formulaire,
+            'comp':compagnie,
         }
     return render(request, 'creer_utilisateur.html', context)
 
