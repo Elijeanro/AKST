@@ -8,22 +8,71 @@
         <p>Ligne : {% if infoln %}{{ infoln.ligne_id.ville_dep.nom_ville }} - 
             {{ infoln.ligne_id.ville_arr.nom_ville }}{% endif %}</p> 
     </h2>
-    <p><strong>Nom :</strong> {{ billet.nom_clt }}</p>
-    <p><strong>Prénom :</strong> {{ billet.prenom_clt }}</p>
-    <p><strong>Email :</strong> {{ billet.email_clt }}</p>
-    <p><strong>Téléphone :</strong> {{ billet.telephone_clt }}</p>
-    <p><strong>Code du billet :</strong> {{ billet.code_billet }}</p>
-    <p><strong>Prix unitaire :</strong> {{ billet.prix }} francs CFA</p>
-    <p><strong>Nombre de places :</strong> {{ billet.place }}</p>
-    <p><strong>Montant total :</strong> {{ billet.montant_billet }} francs CFA</p>
-    <p><strong>Etat du billet :</strong>
-        {{billet.etat_billet.libelle}}
-    </p>
-    <p><strong>Billet valide :</strong> {{billet.bl_valide}}</p>
-    <p><strong>Date et heure de départ :</strong> {% if infoln %}{{ infoln.date_dep|date:"d-m-Y H:i:s" }}{% endif %}</p>
-    <a href="{% url 'client:generate_pdf' billet_id=billet.id %}">Télécharger en PDF</a>
+    <div class="container">
+        <div class="row align-items-start">
+            <table class="table table-success table-striped">
+                <tr>
+                    <th style="color: black;">Nom</th>
+                    <td>{{ billet.nom_clt }}</td>
+                </tr>
+                <tr>
+                    <th style="color: black;">Prénom</th>
+                    <td>{{ billet.prenom_clt }}</td>
+                </tr>
+                <tr >
+                    <th style="color: black;">Email</th>
+                    <td>{{ billet.email_clt }}</td>
+                </tr>
+                <tr >
+                    <th style="color: black;">Téléphone</th>
+                    <td>{{ billet.telephone_clt }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="row align-items-center">
+            <table class="table table-success table-striped">
+                <tr>
+                    <th style="color: black;">Code Billet</th>
+                    <td>{{ billet.code_billet }}</td>
+                </tr>
+                <tr>
+                    <th style="color: black;">Prix Unitaire</th>
+                    <td>{{ billet.prix }} francs CFA</td>
+                </tr>
+                <tr>
+                    <th style="color: black;">Nombre de places</th>
+                    <td>{{ billet.place }}</td>
+                </tr>
+                <tr>
+                    <th style="color: black;">Montant Total</th>
+                    <td>{{ billet.montant_billet }} francs CFA</td>
+                </tr>
+            </table>
+        </div>
+        <div class="row align-items-end">
+            <table class="table table-success table-striped">
+                <tr>
+                    <th style="color: black;">Etat du billet</th>
+                    <td>{{billet.etat_billet.libelle}}</td>
+                </tr>
+                <tr>
+                    <th style="color: black;">Billet valide</th>
+                    <td>{{billet.bl_valide}}</td>
+                </tr>
+                <tr>
+                    <th style="color: black;">Date et heure de départ</th>
+                    <td>{% if infoln %}{{ infoln.date_dep|date:"d-m-Y H:i:s" }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <th style="color: black;">Date et heure d'arrivée</th>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+     <a href="{% url 'client:generate_pdf' billet_id=billet.id %}">Télécharger en PDF</a>
 
-    <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer>
+    <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer><br>
     <script>
       $(document).ready(function () {
         $('#tableau').DataTable({
