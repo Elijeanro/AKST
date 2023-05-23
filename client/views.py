@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse,get_list_or_404,get_object_or_404,redirect,HttpResponseRedirect
+from django.shortcuts import render,HttpResponse,get_object_or_404,redirect,HttpResponseRedirect
 from django.urls import reverse
 from django.template import loader
 from . import forms,models
@@ -10,15 +10,15 @@ from django.db.models.query import QuerySet
 from reportlab.pdfgen import canvas
 from io import BytesIO
 from django.http import HttpResponse
+from django.template.loader import get_template
 from reportlab.lib.pagesizes import letter
+from xhtml2pdf import pisa
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet,ParagraphStyle
-from reportlab.lib.units import inch
-from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
-from reportlab.lib.colors import black
-from reportlab.platypus import Paragraph, Spacer, Image
-from django.template.loader import get_template
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib import colors
 from django.template import Context
+
 
 
 
@@ -140,34 +140,114 @@ def generate_pdf(request, billet_id):
     # Get the Billet object with the specified ID
     billet = models.Billet.objects.get(id=billet_id)
 
-    # Create a new PDF object using ReportLab Canvas
+    # Create a new PDF document using ReportLab SimpleDocTemplate
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="Billet_{}-{}.pdf"'.format(
         billet.nom_clt.replace(" ", "_"), billet.id
     )
-    pdf_canvas = canvas.Canvas(response)
+    pdf_buffer = BytesIO()
+    pdf = SimpleDocTemplate(pdf_buffer, pagesize=letter)
+
+    # Create a list to hold the PDF content
+    elements = []
+
+    # Define custom styles for the PDF
+    styles = getSampleStyleSheet()
+    heading_style = styles['Heading1']
+    heading_style.alignment = 1
+    paragraph_style = ParagraphStyle(
+        'CustomParagraphStyle',
+        parent=styles['Normal'],
+        fontSize=16,
+        leading=18,
+        spaceAfter=12,
+        spaceBefore=12,
+        textColor=colors.black,
+    )
+
+    # Add the header with custom text
+    header_text = "AKST, VOYAGEZ PLUS FACILEMENT"
+    header_style = ParagraphStyle(
+        'CustomHeaderStyle',
+        parent=styles['Heading2'],
+        fontSize=16,
+        leading=18,
+        spaceAfter=12,
+        spaceBefore=0,  # Remove the space before the header
+        textColor=colors.blue,
+        alignment=1  # Align the header text to the center
+    )
+    elements.append(Paragraph(header_text, header_style))
 
     # Add content to the PDF
-    pdf_canvas.drawString(80, 800, "{}".format(billet.date_heure))
-    pdf_canvas.drawString(130, 750, "VOTRE BILLET : ")
-    pdf_canvas.drawString(100, 700, "Ligne: {} - {} ".format(billet.infoligne_id.ligne_id.ville_dep.nom_ville , billet.infoligne_id.ligne_id.ville_arr.nom_ville))
-    pdf_canvas.drawString(100, 650, "Nom: {}".format(billet.nom_clt))
-    pdf_canvas.drawString(100, 600, "Prénom: {}".format(billet.prenom_clt))
-    pdf_canvas.drawString(100, 550, "Téléphone: {}".format(billet.telephone_clt))
-    pdf_canvas.drawString(100, 500, "Email: {}".format(billet.email_clt))
-    pdf_canvas.drawString(100, 450, "Code du billet: {}".format(billet.code_billet))
-    pdf_canvas.drawString(100, 400, "Prix unitaire: {}".format(billet.prix))
-    pdf_canvas.drawString(100, 350, "Nombre de places: {}".format(billet.place))
-    pdf_canvas.drawString(100, 300, "Montant total: {}".format(billet.montant_billet))
-    pdf_canvas.drawString(100, 250, "Date et heure de départ: {}".format(billet.infoligne_id.date_dep))
+    elements.append(Spacer(1, 20))
+    elements.append(Paragraph("Votre Billet de voyage", heading_style))
+    elements.append(Spacer(1, 20))
+    elements.append(Paragraph("Ligne: {} - {}".format(
+        billet.infoligne_id.ligne_id.ville_dep.nom_ville,
+        billet.infoligne_id.ligne_id.ville_arr.nom_ville), paragraph_style))
+    elements.append(Spacer(1, 10))
+    elements.append(Paragraph("Nom: {}".format(billet.nom_clt), paragraph_style))
+    elements.append(Paragraph("Prénom: {}".format(billet.prenom_clt), paragraph_style))
+    elements.append(Paragraph("Téléphone: {}".format(billet.telephone_clt), paragraph_style))
+    elements.append(Paragraph("Email: {}".format(billet.email_clt), paragraph_style))
+    elements.append(Spacer(1, 20))
 
+    # Create a table for additional details
+    data = [
+        ["Code Billet", billet.code_billet],
+        ["Prix Unitaire", "{} francs CFA".format(billet.prix)],
+        ["Nombre de places", str(billet.place)],
+        ["Montant Total", "{} francs CFA".format(billet.montant_billet)],
+        ["Etat du billet", billet.etat_billet.libelle],
+        ["Billet valide", str(billet.bl_valide)],
+        ["Date et heure de départ", billet.infoligne_id.date_dep.strftime("%d-%m-%Y / %H:%M:%S")],
+       ["Date et heure d'arrivée", billet.infoligne_id.date_dep.strftime("%d-%m-%Y / %H:%M:%S")],
+    ]
 
-    # Finish the PDF
-    pdf_canvas.showPage()
-    pdf_canvas.save()
+    # Créer le style de la cellule avec une taille de police spécifique
+    cell_style = ParagraphStyle(
+        'CustomCellStyle',
+        parent=styles['Normal'],
+        fontSize=15,
+        leading=20,
+        textColor=colors.black,
+    )
+
+    # Créer le tableau en spécifiant le style des cellules
+    table_style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
+
+    # Appliquer le style des cellules au tableau
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            cell = Paragraph(data[i][j], cell_style)
+            table_style.add('VALIGN', (j, i), (j, i), 'MIDDLE')
+            table_style.add('LEFTPADDING', (j, i), (j, i), 5)
+            table_style.add('RIGHTPADDING', (j, i), (j, i), 5)
+            table_style.add('TOPPADDING', (j, i), (j, i), 8)
+            table_style.add('BOTTOMPADDING', (j, i), (j, i), 8)
+            table_style.add('FONTSIZE', (j, i), (j, i), 15)
+
+    # Créer le tableau avec le nouveau style des cellules
+    table = Table(data, style=table_style, hAlign='CENTER')
+    elements.append(table)
+
+    # Build the PDF document
+    pdf.build(elements)
+
+    # Get the PDF content from the buffer and return the response
+    pdf_buffer.seek(0)
+    response.write(pdf_buffer.getvalue())
+    pdf_buffer.close()
 
     return response
-
 
 def recherche1_view(request):
     if request.method == 'POST':
