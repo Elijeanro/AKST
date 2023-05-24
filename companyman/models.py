@@ -11,6 +11,7 @@ class Ligne(models.Model):
     libelle=models.CharField(max_length=40, null=True)
     ville_dep=models.ForeignKey(Ville,on_delete=models.DO_NOTHING,related_name='depart' )
     ville_arr=models.ForeignKey(Ville,on_delete=models.DO_NOTHING,related_name='arrivee' )
+    duree_trajet=models.DurationField(null=True)
     
     
 class InfoLigne(models.Model):
