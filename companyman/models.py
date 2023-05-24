@@ -19,7 +19,7 @@ class InfoLigne(models.Model):
     prix=models.FloatField(default=0)
     bus_id=models.ForeignKey(Bus, on_delete=models.DO_NOTHING) 
     place_restante=models.PositiveSmallIntegerField(default=60)
-    compagnie_id=models.ForeignKey(Compagnie, on_delete=models.DO_NOTHING, null=True)
+   
    
 class Utilisateur(models.Model):
     grade_id=models.ForeignKey(Grade, on_delete=models.DO_NOTHING)
