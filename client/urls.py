@@ -19,5 +19,6 @@ urlpatterns = [
     path('compagnies/',views.lescompagnies_view,name='lescompagnies'),
     path('compagnie/<int:cp_id>/',views.lacompagnie_view, name='lacompagnie'),
     path('generate-pdf/<int:billet_id>/', views.generate_pdf, name='generate_pdf'),
+    path('info_par_ligne/<str:ligne>/', views.info_par_ligne_view,name='info_par_ligne')
 ]
 

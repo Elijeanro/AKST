@@ -18,6 +18,9 @@ from reportlab.lib.styles import getSampleStyleSheet,ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib import colors
 from django.template import Context
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 
 
@@ -58,16 +61,31 @@ def reservation1_view(request):
 
 
 def listechoix_view(request):
-    
+    ligne= Ligne.objects.all()
+    infln= InfoLigne.objects.all()
     context={'rdt':lesdates,
              'infln':infln,
              'lignes':ligne,}
     return render(request,'listechoix.html',context)
 
+def info_par_ligne_view(request, ligne):
+    la_ligne = Ligne.objects.filter(libelle=ligne).first()
+    if la_ligne:
+        id_ligne = la_ligne.id
+        context = {
+            'la_ligne': la_ligne,
+            'infln': InfoLigne.objects.filter(ligne_id=id_ligne,date_dep__gt=datetime.datetime.now(),place_restante__gt=0)
+        }
+        return render(request, 'info_par_ligne.html', context)
+    else:
+        # Gérer le cas où la ligne n'existe pas
+        return HttpResponse("La ligne spécifiée n'existe pas.")
+
+
 
 def infoligne_view(request,ln_id):
     context={'ln':get_object_or_404(Ligne, pk=ln_id),
-             'infln':infln.filter(ligne_id=ln_id),
+             'infln':infln.filter(ligne_id=ln_id, date_dep__gte=datetime.datetime.now(),place_restante__gt=0),
              }
     return render(request,'infoligne.html',context)
 
@@ -78,6 +96,32 @@ def update_places_disponibles(infoligne_id, nb_places_res):
     infoligne = InfoLigne.objects.get(pk=infoligne_id)
     infoligne.place_restante -= nb_places_res
     infoligne.save()
+
+
+# def send_email(subject, message, recipient):
+#     # Paramètres de connexion au serveur SMTP
+#     smtp_host = 'smtp.example.com'
+#     smtp_port = 587
+#     smtp_username = 'your_smtp_username'
+#     smtp_password = 'your_smtp_password'
+
+#     # Adresse e-mail de l'expéditeur et du destinataire
+#     sender = 'sender@example.com'
+#     receiver = recipient
+
+#     # Création du message e-mail
+#     msg = MIMEMultipart()
+#     msg['From'] = sender
+#     msg['To'] = receiver
+#     msg['Subject'] = subject
+#     msg.attach(MIMEText(message, 'plain'))
+
+#     # Envoi de l'e-mail via SMTP
+#     with smtplib.SMTP(smtp_host, smtp_port) as server:
+#         server.starttls()
+#         server.login(smtp_username, smtp_password)
+#         server.send_message(msg)
+
 
 
 def reservation2_view(request, res_id):
@@ -109,6 +153,12 @@ def reservation2_view(request, res_id):
                 )
                 billet.save()
                 update_places_disponibles(context['inf'].pk, donnees['place'])
+                # Envoi de l'e-mail de confirmation
+                # subject = 'Confirmation de réservation'
+                # message = 'Votre réservation a été effectuée avec succès.'
+                # recipient = donnees['email_clt']
+                # send_email(subject, message, recipient)
+
                 return redirect(reverse('client:billet_detail_view', args=[billet.pk]))
             else:
                 max_place = res.place_restante

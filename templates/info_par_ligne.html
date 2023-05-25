@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% extends 'base0.html' %}
+
+
+{% block contenu %}
+<div class="top">
+    <div class="wrapper row3">
+        <main class="hoc container clear">
+          <h1>Informations sur la ligne : {{ la_ligne.ville_dep.nom_ville }} - {{ la_ligne.ville_arr.nom_ville }}</h1>
+      
+          <table id="tableau" class="display">
+            <thead>
+              <tr>
+                <th>DATE ET HEURE DE DEPART</th>
+                <th>COMPAGNIE</th>
+                <th>PRIX (CFA)</th>
+                <th>PLACES DISPONIBLES</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in infln %}
+              <tr>
+                <td>{{ i.date_dep }}</td>
+                <td>{{ i.bus_id.compagnie_id.nom_cp }}</td>
+                <td>{{ i.prix }}</td>
+                <td>{{ i.bus_id.nb_place }}</td>
+                <td>
+                  <footer><a class="btn" href="{% url 'client:etape2' i.id %}">Réserver &rsaquo;</a></footer>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="container-contact100-form-btn" style="width: 45%;">
+            <button class="contact100-form-btn">
+                <a class="contact100-form-btn" href="{% url 'client:accueil' %} ">&laquo; Revenir à la page d'accueil</a>
+            </button>
+        </div>
+        </main>
+      </div>
+      
+
+    <!-- ################################################################################################ -->
+    <!-- ################################################################################################ -->
+    <!-- ################################################################################################ -->
+    
+    <script>
+        $(document).ready(function () {
+            $('#tableau').DataTable({
+                dom: 'f',
+                language: {
+                    url: "DataTables/media/french.json"
+                },
+            });
+        });
+    </script>
+</div>
+{% endblock contenu %}

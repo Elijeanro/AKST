@@ -15,20 +15,22 @@
         <h6>Liste des lignes disponibles</h6><br>
         <nav class="sdb_holder">
           <ul>
-
             {% for i in lignes %}
-            <li>{{i.ville_dep.nom_ville}} - {{i.ville_arr.nom_ville}}</li>
+            <li>
+              <a href="{% url 'client:info_par_ligne' ligne=i.libelle %}">{{i.libelle}}</a>
+            </li>
             {% endfor %}
           </ul>
         </nav>
       </div>
+      
       <!-- ################################################################################################ -->
       <!-- ################################################################################################ -->
       <div class="content three_quarter">
         <!-- ################################################################################################ -->
         <h1>Liste des voyages</h1>
         <!-- ################################################################################################ -->
-        <h2  class="heading">Comment faire ?</h2>
+        <h2 class="heading">Comment faire ?</h2>
         <img class="imgr borderedbox inspace-5" src="../images/demo/imgr.gif" alt="">
         <p>Aliquatjusto quisque nam consequat doloreet vest orna partur scetur portortis nam. Metadipiscing eget facilis
           elit sagittis felisi eger id justo maurisus convallicitur.</p>
@@ -43,53 +45,18 @@
             href="https://www.os-templates.com/">free website templates</a> section.</p>
         <p>Portortornec condimenterdum eget consectetuer condis consequam pretium pellus sed mauris enim. Puruselit
           mauris nulla hendimentesque elit semper nam a sapien urna sempus.</p><br><br>
-        <h1  class="heading">Choisissez votre ligne</h1>
 
       </div>
     </main>
-  </div>
-  <div class="scrollable">
-    
-    {% for l in lignes %}
-    <div style="margin: auto;padding: auto; width: 1100px;">
-      <h5>LIGNE : {{l.ville_dep.nom_ville}} - {{l.ville_arr.nom_ville}} </h5>
-      <table id="tableau" class="display">
-        <thead>
-          <tr>
-            <th>DATE ET HEURE DE DEPART</th>
-            <th>COMPAGNIE</th>
-            <th>PRIX (CFA)</th>
-            <th>PLACES DISPONIBLE</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for i in l.infln.all %}
-          <tr>
-            <td> {{i.date_dep}} </td>
-            <td> {{ i.bus_id.compagnie_id.nom_cp }} </td>
-            <td> {{i.prix}} </td>
-            <td> {{i.bus_id.nb_place}} </td>
-            <td>
-              <footer><a class="btn" href="{% url 'client:etape2' i.id %}">Réserver &rsaquo;</a></footer>
-            </td>
-          </tr>
-          {% endfor %}
-
-        </tbody>
-      </table>
-    </div>
-    {% endfor %}
-      
-  </div>
+  
   <!-- ################################################################################################ -->
   <!-- ################################################################################################ -->
   <!-- ################################################################################################ -->
   <div class="container-contact100-form-btn" style="width: 45%;">
     <button class="contact100-form-btn">
-        <a class="contact100-form-btn" href="{% url 'client:accueil' %} ">&laquo; Revenir à la page d'accueil</a>
+      <a class="contact100-form-btn" href="{% url 'client:accueil' %} ">&laquo; Revenir à la page d'accueil</a>
     </button>
-</div>
+  </div>
   <script>
     $(document).ready(function () {
       $('#tableau').DataTable({
