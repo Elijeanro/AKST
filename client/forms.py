@@ -10,30 +10,6 @@ import phonenumbers
 import datetime
 
 
-id=Billet.objects.values_list('id',flat=True).order_by('-id').first()
-id_billet=id+1
-# Extraire les valeurs des champs 'field1' et 'field2' sous forme de liste de tuples
-infolignes = InfoLigne.objects.filter(date_dep__gt=datetime.datetime.now()).values_list(
-            'date_dep',
-            'bus_id_id',
-            'ligne_id_id',
-            # 'ligne_id.ville_arr.nom_ville',
-            'prix',
-            )
-# Aplatir la liste de tuples en une liste à plat
-flat_values = [value for tuple_value in infolignes for value in tuple_value]
-# Créer une liste de tuples contenant les valeurs des champs 'field1' et 'field2'
-values = InfoLigne.objects.filter(date_dep__gt=datetime.datetime.now()).values_list(
-            'date_dep',
-            'bus_id_id',
-            'ligne_id_id',
-            # 'ligne_id.ville_arr.nom_ville',
-            'prix',
-            )
-
-# Créer une liste de tuples à partir de la liste de valeurs, en utilisant une compréhension de liste
-choices = [(value[0], value[1]) for value in values]
-
 destinataires=[
     ('Plateforme','La Plateforme'),
     ('Nagode', 'Compagnie Nagode'),
