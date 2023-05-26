@@ -1,24 +1,96 @@
 from django.shortcuts import render,HttpResponse,get_list_or_404,redirect,get_object_or_404
 from django.urls import reverse
 from django.template import loader
-import datetime
 from dashboard.models import Compagnie,Ville
 from client.models import Billet,EtatBillet
 from .models import Ligne,InfoLigne,Bus,Utilisateur
 from django.contrib.auth.decorators import login_required
 from .forms import InfoligneForm,UtilisateurForm,RechercherUtilisateur,RechercheBillet
+from datetime import timedelta, datetime,date
+from django.shortcuts import redirect, render, get_object_or_404
 
 ville= Ville.objects.all()
 ligne= Ligne.objects.all()
 infln= InfoLigne.objects.all()
 comp= Compagnie.objects.all()
 bus= Bus.objects.all()
-dnow= datetime.date.today()
+dnow= date.today()
 utilisateur=Utilisateur.objects.all()
+
+# def connexion_compagnie(request, nom_comp):
+#     comp_id = Compagnie.objects.filter(nom_cp=nom_comp).values_list('id', flat=True).first()
+#     comp=Compagnie.objects.filter(nom_cp=nom_comp)
+#     message = ''
+    
+#     if request.method == 'POST':
+#         connexion = RechercherUtilisateur(request.POST)
+        
+#         if connexion.is_valid():
+#             donnees = connexion.cleaned_data
+#             username = donnees['nom_utilisateur']
+#             password = donnees['pw_user']
+#             user_id = Utilisateur.objects.filter(nom_utilisateur=username, pw_user=password).values_list('id', flat=True)
+            
+#             context = {'form': connexion}
+            
+#             if user_id is not None:
+#                 user_cp_id = Utilisateur.objects.filter(nom_utilisateur=username, pw_user=password).values_list('compagnie_id', flat=True).first()
+#                 user_cp_grade = Utilisateur.objects.filter(nom_utilisateur=username, pw_user=password).values_list('grade_id', flat=True).first()
+                
+#                 if user_cp_id == comp_id:
+#                     if user_cp_grade == 2:
+#                         return redirect(reverse('companyman:espace_compagnie_manager', args=[user_id]))
+#                     elif user_cp_grade == 3:
+#                         return redirect(reverse('companyman:espace_compagnie_agent', args=[user_id]))
+#                 else:
+#                     message = "Vous n'êtes pas de cette compagnie."
+#                     return render(request, 'err_msg.html', {'message': message})
+#             else:
+#                 message = 'Identifiant ou mot de passe incorrect.'
+#                 return render(request, 'err_msg.html', {'message': message})
+#         else:
+#             context['form'] = connexion
+#     else:
+#         connexion = RechercherUtilisateur()
+    
+#     return render(request, 'connexion_compagnie.html', {'form': connexion, 'message': message, 'comp':comp})
+
+
+# def espace_compagnie_manager(request, user_id):
+#     user = get_object_or_404(Utilisateur, pk=user_id)
+#     user_comp_id = Utilisateur.objects.filter(id=user_id).values_list('compagnie_id',flat=True).first()
+    
+#     comp = Compagnie.objects.filter(id=user_comp_id).first()
+
+#     if user is None or comp is None:
+#         message = "Vous n'êtes pas autorisé à accéder à cet espace !"
+#         return render(request, 'err_msg.html', {'message': message})
+
+#     lignes = Ligne.objects.all()
+#     context = {'utilisateur': user, 'lignes': lignes, 'comp': comp}
+
+#     return render(request, 'espace_compagnie_manager.html', context)
+
+
+
+# def espace_compagnie_agent(request, user_id):
+#     user = get_object_or_404(Utilisateur, pk=user_id)
+#     user_comp_id = Utilisateur.objects.filter(id=user_id).values_list('compagnie_id',flat=True).first()
+    
+#     comp = Compagnie.objects.filter(id=user_comp_id).last()
+
+#     if user is None or comp is None:
+#         message = "Vous n'êtes pas autorisé à accéder à cet espace !"
+#         return render(request, 'err_msg.html', {'message': message})
+
+#     lignes = Ligne.objects.all()
+#     context = {'utilisateur': user, 'lignes': lignes, 'comp': comp}
+
+#     return render(request, 'espace_compagnie_agent.html', context)
 
 def connexion_compagnie(request, nom_comp):
     comp_id = Compagnie.objects.filter(nom_cp=nom_comp).values_list('id', flat=True).first()
-    comp=Compagnie.objects.filter(nom_cp=nom_comp)
+    comp = Compagnie.objects.filter(nom_cp=nom_comp)
     message = ''
     
     if request.method == 'POST':
@@ -40,7 +112,7 @@ def connexion_compagnie(request, nom_comp):
                     if user_cp_grade == 2:
                         return redirect(reverse('companyman:espace_compagnie_manager', args=[user_id]))
                     elif user_cp_grade == 3:
-                        return redirect(reverse('companyman:espace_compagnie_agent', args=[comp_id]))
+                        return redirect(reverse('companyman:espace_compagnie_agent', args=[user_id]))
                 else:
                     message = "Vous n'êtes pas de cette compagnie."
                     return render(request, 'err_msg.html', {'message': message})
@@ -52,12 +124,12 @@ def connexion_compagnie(request, nom_comp):
     else:
         connexion = RechercherUtilisateur()
     
-    return render(request, 'connexion_compagnie.html', {'form': connexion, 'message': message, 'comp':comp})
+    return render(request, 'connexion_compagnie.html', {'form': connexion, 'message': message, 'comp': comp})
 
 
 def espace_compagnie_manager(request, user_id):
     user = get_object_or_404(Utilisateur, pk=user_id)
-    user_comp_id = Utilisateur.objects.filter(id=user_id).values_list('compagnie_id',flat=True).first()
+    user_comp_id = Utilisateur.objects.filter(id=user_id).values_list('compagnie_id', flat=True).first()
     
     comp = Compagnie.objects.filter(id=user_comp_id).first()
 
@@ -71,10 +143,9 @@ def espace_compagnie_manager(request, user_id):
     return render(request, 'espace_compagnie_manager.html', context)
 
 
-
 def espace_compagnie_agent(request, user_id):
     user = get_object_or_404(Utilisateur, pk=user_id)
-    user_comp_id = Utilisateur.objects.filter(id=user_id).values_list('compagnie_id',flat=True).first()
+    user_comp_id = Utilisateur.objects.filter(id=user_id).values_list('compagnie_id', flat=True).first()
     
     comp = Compagnie.objects.filter(id=user_comp_id).last()
 
@@ -86,6 +157,7 @@ def espace_compagnie_agent(request, user_id):
     context = {'utilisateur': user, 'lignes': lignes, 'comp': comp}
 
     return render(request, 'espace_compagnie_agent.html', context)
+
 
 
 def creer_utilisateur(request,comp_id):
@@ -121,21 +193,37 @@ def creer_utilisateur(request,comp_id):
     return render(request, 'creer_utilisateur.html', context)
 
 
-# @login_required
-def ajouter_infoligne(request,comp_id):
-    leslignes=[(l.id,l.libelle) for l in Ligne.objects.all()]
-    # Filtrer les bus en fonction de la compagnie connectée
-    compagnie_id = get_object_or_404(Compagnie,pk=comp_id)  
+def ajouter_infoligne(request, comp_id):
+    leslignes = [(l.id, l.libelle) for l in Ligne.objects.all()]
+    compagnie_id = get_object_or_404(Compagnie, pk=comp_id)
     lesbus = Bus.objects.filter(compagnie_id=compagnie_id)
-    form=InfoligneForm(request.POST or None)
-    form.fields['bus_id'].queryset = lesbus  # Définir la queryset de bus pour le champ "bus_id" du formulaire
+    form = InfoligneForm(request.POST or None)
+    form.fields['bus_id'].queryset = lesbus
+
     if form.is_valid():
-        form.save()
+        infoligne = form.save(commit=False)
+
+        # Calcul de la date d'arrivée en utilisant la durée du trajet
+        ligne = Ligne.objects.get(pk=infoligne.ligne_id.pk)
+        infoligne.date_arr = infoligne.date_dep + ligne.duree_trajet
+
+        if infoligne.date_dep <= datetime.now():
+            date_dep = infoligne.date_dep
+            date_act = datetime.now()
+            duree_traj = date_act - date_dep
+            ligne_id = Ligne.objects.filter(duree_trajet__lte=duree_traj).first()
+            ville_id = ligne_id.ville_arr
+            infoligne.position = Ville.objects.get(pk=ville_id)
+
+        infoligne.save()
         return redirect('companyman:liste_infolignes')
-    context={
-        'form':form,
+
+    context = {
+        'form': form,
     }
-    return render(request,'ajouter_infoligne.html',context)
+    return render(request, 'ajouter_infoligne.html', context)
+
+
 
 def liste_infolignes(request,comp_id):
     context={'comp':get_object_or_404(Compagnie, pk=comp_id),

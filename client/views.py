@@ -252,7 +252,7 @@ def generate_pdf(request, billet_id):
         ["Etat du billet", billet.etat_billet.libelle],
         ["Billet valide", str(billet.bl_valide)],
         ["Date et heure de départ", billet.infoligne_id.date_dep.strftime("%d-%m-%Y / %H:%M:%S")],
-       ["Date et heure d'arrivée", billet.infoligne_id.date_dep.strftime("%d-%m-%Y / %H:%M:%S")],
+        ["Date et heure d'arrivée", billet.infoligne_id.date_arr.strftime("%d-%m-%Y / %H:%M:%S")],
     ]
 
     # Créer le style de la cellule avec une taille de police spécifique

@@ -16,6 +16,7 @@ class Ligne(models.Model):
     
 class InfoLigne(models.Model):
     date_dep=models.DateTimeField()
+    date_arr=models.DateTimeField(null=True)
     ligne_id=models.ForeignKey(Ligne,on_delete=models.DO_NOTHING)
     prix=models.FloatField(default=0)
     bus_id=models.ForeignKey(Bus, on_delete=models.DO_NOTHING) 
