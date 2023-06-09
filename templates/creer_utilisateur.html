@@ -1,58 +1,70 @@
 <!DOCTYPE html>
 {% extends 'base2.html' %}
 
+{% load static %}
 
 {% block contenu %}
 <div class="container">
+    <br>
 
     <div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card-body p-0">
+            <h3 style="text-align: center;">Compagnie {{comp.nom_cp}} </h3>
             <!-- Nested Row within Card Body -->
             <div class="row">
-                <!-- <div class="col-lg-5 d-none d-lg-block bg-register-image"></div> -->
+                {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li {% if message.tags %} class="{{ message.tags }}" {% endif %} >{{ message }}</li>
+                                {% endfor %}
+                        </ul>
+                        {% endif %}
+                <div class="contact100-pic js-tilt col-lg-5 d-none d-lg-block"><img src="{% static 'images/modele-formulaire-inscription.avif' %}" alt="IMG">
+                    </div>
                 <div class="col-lg-7">
                     <div class="p-5">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">Créer un compte!</h1>
+                            <h1 class="h4 text-black-900 mb-4">Créer un compte!</h1>
                         </div>
-                        <form class="user">
-                            <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                    {{form.grade_id}}
-                                </div>
-                                <div class="col-sm-6 mb-3">
-                                    {{form.nom_user}}
-                                </div>
-                                <div class="col-sm-6">
-                                    {{form.prenom_user}}    
-                                </div>
+                        <form class="user" method="post">
+                            {% csrf_token %}
+                            <div class="form-group" style="color: black;">
+                                {{ form.grade_id }}
                             </div>
-                            <div class="form-group">
-                                {{form.email_user}}
+                            <div class="form-group" style="color: black;">
+                                {{ form.nom_user }}
                             </div>
-                            <div class="form-group row">
-                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                    {{form.nom_utilisateur}}
-                                </div>
-                                <div class="col-sm-6">
-                                    {{form.pw_user}}
-                                </div>
-                                <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input type="password" class="form-control form-control-user"
-                                        id="pw_user2" placeholder="Repeat Password">
-                                </div>
+                            <div class="form-group" style="color: black;">
+                                {{ form.prenom_user }}
                             </div>
+                            <div class="form-group" style="color: black;">
+                                {{ form.email_user }}
+                            </div>
+                            <div class="form-group" style="color: black;">
+                                {{ form.nom_utilisateur }}
+                            </div>
+                            <div class="form-group" style="color: black;">
+                                {{ form.pw_user }}
+                            </div>
+                            <div class="form-group" style="color: black;">
+                                <input type="password" class="form-control" name="pw_user2" placeholder="Repeat Password">
+                            </div>
+                            <input type="hidden" name="personnel_actif" value="True">  <!-- Champ personnel_actif -->
                             <button type="submit" class="btn btn-primary btn-user btn-block">Register Account</button>
-                            
-                            <hr>
-                            
-                        </form>
-                        <hr>
+                        </form><hr>
+                        
+                        <footer class="sticky-footer bg-white">
+                            <div class="container my-auto">
+                                <a class="btn" href="javascript:history.go(-1);">&laquo; Revenir en arrière</a>
+                            </div>
+                        </footer>
+                        
                         <div class="text-center">
                             <a class="small" href="forgot-password.html">Forgot Password?</a>
                         </div>
                         <div class="text-center">
-                            <a class="small" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Already have an account? Login!</a>
+                            <a class="small" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Already have
+                                an account? Login!</a>
                         </div>
                     </div>
                 </div>
@@ -63,4 +75,3 @@
 </div>
 
 {% endblock contenu %}
-    

@@ -21,10 +21,14 @@ from django.template import Context
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
-
-
-
+from django.core.mail import send_mail
+from . import forms, models
+from django.conf import settings
+from vonage import Client, Sms
+from phonenumbers import PhoneNumberFormat
+from phonenumber_field.phonenumber import PhoneNumber
+import stripe
+      
 lecode=code(8)
 ville= Ville.objects.all()
 ligne= Ligne.objects.all()
@@ -96,94 +100,130 @@ def update_places_disponibles(infoligne_id, nb_places_res):
     infoligne = InfoLigne.objects.get(pk=infoligne_id)
     infoligne.place_restante -= nb_places_res
     infoligne.save()
+    
 
+def envoie_sms(phone_number, message):
+    # Convertissez l'objet PhoneNumber en format E.164
+    formatted_number = phone_number.as_e164
 
-# def send_email(subject, message, recipient):
-#     # Paramètres de connexion au serveur SMTP
-#     smtp_host = 'smtp.example.com'
-#     smtp_port = 587
-#     smtp_username = 'your_smtp_username'
-#     smtp_password = 'your_smtp_password'
+    # Votre code d'envoi de SMS en utilisant Vonage APIs
+    client = Client(key='73ec7c88', secret='trBfMUcaUUhXZBC6')
+    sms = Sms(client)
 
-#     # Adresse e-mail de l'expéditeur et du destinataire
-#     sender = 'sender@example.com'
-#     receiver = recipient
+    # Envoyez le SMS en utilisant le numéro de téléphone formaté
+    sms.send_message({
+        "from": "+22892101071",  # Votre numéro Vonage
+        "to": formatted_number,
+        "text": message
+    })
 
-#     # Création du message e-mail
-#     msg = MIMEMultipart()
-#     msg['From'] = sender
-#     msg['To'] = receiver
-#     msg['Subject'] = subject
-#     msg.attach(MIMEText(message, 'plain'))
-
-#     # Envoi de l'e-mail via SMTP
-#     with smtplib.SMTP(smtp_host, smtp_port) as server:
-#         server.starttls()
-#         server.login(smtp_username, smtp_password)
-#         server.send_message(msg)
-
-
+stripe.api_key = 'sk_test_51NGHOWAKRtGF49xxamC8SgBnuRw8bTnAeivp5XHUTbVTak4LJSo6MdZ2ooeFldq7ACCVeLlhwKp6pXC2GSnYwFLo00ptjvqn6B'
 
 def reservation2_view(request, res_id):
-    res = get_object_or_404(InfoLigne, pk=res_id)
-    if request.method == 'POST':
+    res = get_object_or_404(models.InfoLigne, pk=res_id)
+    ligne_id = models.InfoLigne.objects.filter(id=res_id).values_list('ligne_id', flat=True).first()
+    bus=Bus.objects.filter(id=res.bus_id.id).first()
+    if request.method == "POST":
         formulaire = forms.BilletForm(request.POST)
         context = {
             'res': res,
-            'inf': infln.get(pk=res_id),
+            'inf': models.InfoLigne.objects.get(pk=res_id),
             'form1': formulaire,
-            'lecode': lecode,
-            'prix': InfoLigne.objects.filter(id=res_id).values_list('prix', flat=True),
+            'prix': res.prix,
+            'ligne': Ligne.objects.filter(id=ligne_id).first(),
+            'compagnie':Compagnie.objects.filter(id=bus.compagnie_id.id).values_list('nom_cp', flat=True).first()
         }
         if formulaire.is_valid():
             donnees = formulaire.cleaned_data
             if donnees['place'] <= res.place_restante:
-                montant = models.Billet(place=donnees['place'], prix=context['prix'])
-                billet = forms.Billet.objects.create(
-                    nom_clt=donnees['nom_clt'],
-                    prenom_clt=donnees['prenom_clt'],
-                    email_clt=donnees['email_clt'],
-                    telephone_clt=donnees['telephone_clt'],
-                    place=donnees['place'],
-                    code_billet=lecode, # une fonction qui génère un code unique pour chaque billet
-                    infoligne_id=context['inf'],
-                    prix=context['prix'],
-                    montant_billet=montant.produit,
-                    bl_valide=True,
-                )
-                billet.save()
-                update_places_disponibles(context['inf'].pk, donnees['place'])
-                # Envoi de l'e-mail de confirmation
-                # subject = 'Confirmation de réservation'
-                # message = 'Votre réservation a été effectuée avec succès.'
-                # recipient = donnees['email_clt']
-                # send_email(subject, message, recipient)
+                montant = donnees['place'] * context['prix']
 
-                return redirect(reverse('client:billet_detail_view', args=[billet.pk]))
+                try:
+                    billet = models.Billet(
+                        nom_clt=donnees['nom_clt'],
+                        prenom_clt=donnees['prenom_clt'],
+                        email_clt=donnees['email_clt'],
+                        telephone_clt=donnees['telephone_clt'],
+                        place=donnees['place'],
+                        code_billet=lecode,
+                        prix=context['prix'],
+                        montant_billet=montant,
+                        bl_valide=True,
+                        infoligne_id=context['inf'],
+                    )
+                    client = stripe.Customer.create(
+                        email=donnees['email_clt'],
+                        name=donnees['nom_clt'],
+                        description="Payment",
+                        source=request.POST['stripeToken']
+                    )
+                    charge = stripe.Charge.create(
+                        customer=client.id,  # Utilisez client.id au lieu de client
+                        amount=int(montant),
+                        currency='xof',
+                        description="Payment"
+                    )
+                    transRetrive = stripe.Charge.retrieve(
+                        charge["id"],
+                        api_key='sk_test_51NGHOWAKRtGF49xxamC8SgBnuRw8bTnAeivp5XHUTbVTak4LJSo6MdZ2ooeFldq7ACCVeLlhwKp6pXC2GSnYwFLo00ptjvqn6B'
+                    )
+                    charge.save()
+                    billet.id_paiement=charge.id
+                    billet.save()
+                    update_places_disponibles(context['inf'].pk, donnees['place'])
+                    # Envoyer l'e-mail de confirmation
+                    subject = 'Confirmation de réservation'
+                    message = f"Votre réservation a été effectuée avec succès.\n\nNom: {donnees['nom_clt']}\nPrénom: {donnees['prenom_clt']}\nLigne: {context['ligne']}\nCompagnie: {context['compagnie']}\nTarif: {context['prix']}\nNombre de place: {donnees['place']}\nMontant total: {montant}\nCode du billet: {lecode}\n\nID de paiement: {charge.id}"  # Utilisez charge.id au lieu de payment_intent_id
+                    email_from = settings.EMAIL_HOST_USER
+                    recipient = donnees['email_clt']
+                    send_mail(subject, message, email_from, [recipient])
+                    return redirect(reverse('client:billet_detail_view', args=[billet.id]))
+                except stripe.error.CardError as e:
+                    print(e)
+                    return HttpResponse("<h1>There was an error charging your card:</h1>"+str(e))
+                except stripe.error.RateLimitError as e:
+                    print(e)
+                    return HttpResponse("<h1>Rate error!</h1>")
+                except stripe.error.InvalidRequestError as e:
+                    print(e)
+                    return HttpResponse("<h1>Invalid requestor!</h1>")
+                except stripe.error.AuthenticationError as e:
+                    print(e)
+                    return HttpResponse("<h1>Invalid API auth!</h1>")
+                except stripe.error.StripeError as e:
+                    print(e)
+                    return HttpResponse("<h1>Stripe error!</h1>")
+                except Exception as e:
+                    print(e)
+                    return HttpResponse("<h1>An error occurred!</h1>")
             else:
-                max_place = res.place_restante
-                message = f"Le nombre de places que vous pouvez choisir est maximum {max_place}"
-                context['message'] = message
-        else:
-            context['form1'] = formulaire
+                error_msg = "Nombre de places indisponible"
+                formulaire.add_error('place', error_msg)
     else:
         formulaire = forms.BilletForm()
-        context = {
-            'res': get_object_or_404(InfoLigne, pk=res_id),
-            'inf': infln.get(pk=res_id),
-            'form1': formulaire,
-        }
+        
+    context = {
+        'res': res,
+        'inf': models.InfoLigne.objects.get(pk=res_id),
+        'form1': formulaire,
+        'prix': res.prix,
+        'ligne': Ligne.objects.filter(id=ligne_id).first(),
+    }
     return render(request, 'reservation_etape2.html', context)
+
+
 
 def billet_detail_view(request, billet_id):
     billet = get_object_or_404(models.Billet, pk=billet_id)
     infoln = get_object_or_404(InfoLigne, pk=billet.infoligne_id.pk)
+    ligne = Ligne.objects.get(id=infoln.ligne_id.id)  # Récupérer l'objet ligne correspondant à l'ID
     context = {
         'billet': billet,
-        'infoln' : infoln,
-        'ligne' : ligne,
-        }
+        'infoln': infoln,
+        'ligne': ligne,  # Ajouter l'objet ligne dans le contexte
+    }
     return render(request, 'billet_detail.html', context)
+
 
 
 def generate_pdf(request, billet_id):
@@ -236,6 +276,8 @@ def generate_pdf(request, billet_id):
     elements.append(Paragraph("Ligne: {} - {}".format(
         billet.infoligne_id.ligne_id.ville_dep.nom_ville,
         billet.infoligne_id.ligne_id.ville_arr.nom_ville), paragraph_style))
+    elements.append(Spacer(1, 10))
+    elements.append(Paragraph("Compagnie: {} ".format(billet.infoligne_id.bus_id.compagnie_id.nom_cp), paragraph_style))
     elements.append(Spacer(1, 10))
     elements.append(Paragraph("Nom: {}".format(billet.nom_clt), paragraph_style))
     elements.append(Paragraph("Prénom: {}".format(billet.prenom_clt), paragraph_style))
@@ -334,7 +376,11 @@ def annulation_view(request, billet_id):
 
 def annuler_billet(request, billet_id):
     billet = get_object_or_404(models.Billet, id=billet_id)
+    infoln = get_object_or_404(models.InfoLigne, id=billet.infoligne_id.id)
     billet.etat_billet = models.EtatBillet.objects.get(id=3)
+    place=int(billet.place)
+    place=-place
+    update_places_disponibles(infoln.pk, place)
     billet.bl_valide = False
     billet.save()
 

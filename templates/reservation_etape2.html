@@ -2,52 +2,217 @@
 {% extends 'base1.html' %}
 {% load static %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static 'bootstrap5/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'fonts/fontawesome-all.min.css' %}">
+<link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'fonts/ionicons.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/Footer-Dark.css' %}">
+<link rel="stylesheet" href="{% static 'fonts/material-icons.min.css' %}">
+<link rel="stylesheet" href="{% static 'fonts/fontawesome5-overrides.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/search_popup.css' %}">
+<link rel="stylesheet" href="{% static 'css/Contact-Form-Clean.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
+{% endblock head %}
+
 {% block contenu %}
 
 <div class="bg-contact100">
-    <h1 style="align-items: center;text-align: center; ">RESERVATION</h1>
+    <h1 style="text-align: center;">RESERVATION</h1>
+    <p>
+    <h4 style="text-align: center;">Ligne : {{ inf.ligne_id.libelle }}</h4>
+    </p>
+    <p>
+    <h4 style="text-align: center;">Prix par place : {{ prix }} F CFA</h4>
+    </p>
     <div class="container-contact100">
         <div class="wrap-contact100">
             <div class="contact100-pic js-tilt" data-tilt>
                 <img src="{% static 'images/modele-formulaire-inscription.avif' %}" alt="IMG">
             </div>
-            <form class="contact100-form validate-form" method="post" action="">
-                
-                <span class="contact100-form-title">
-                    <b>Faites votre réservation</b> 
-                </span>
+            <form class="contact100-form validate-form" method="post" action="" id="payment-form">
                 {% csrf_token %}
-                <div class="wrap-input100 validate-input" data-validate="Un Nom est requi.">
+                <span class="contact100-form-title">
+                    <b>Faites votre réservation</b>
+                </span>
+                <div class="wrap-input100 validate-input" data-validate="Un Nom est requis.">
                     {{ form1.nom_clt }}
                     <span class="focus-input100"></span>
                 </div>
-                <div class="wrap-input100 validate-input" data-validate="Un Prénom est requi">
+                <div class="wrap-input100 validate-input" data-validate="Un Prénom est requis.">
                     {{ form1.prenom_clt }}
                     <span class="focus-input100"></span>
                 </div>
-                <div class="wrap-input100 validate-input" data-validate="Un email valide est requi.">
+                <div class="wrap-input100 validate-input" data-validate="Un email valide est requis.">
                     {{ form1.email_clt }}
                     <span class="focus-input100"></span>
                 </div>
-                <div class="wrap-input100 validate-input" data-validate="Un numéro de telephone valide est requi">
+                <div class="wrap-input100 validate-input" data-validate="Un numéro de téléphone valide est requis.">
                     {{ form1.telephone_clt }}
                     <span class="focus-input100"></span>
                 </div>
-                <div class="wrap-input100 validate-input" data-validate="Vous devez selectionner le nombre de place">
+                <div class="wrap-input100 validate-input" data-validate="Vous devez sélectionner le nombre de places.">
                     {{ form1.place }}
                     <span class="focus-input100"></span>
                 </div>
-                
-                <div class="container-contact100-form-btn">
-                    <button class="contact100-form-btn" type="submit">
-                        Valider
-                    </button>
+
+                <!-- <label for="card-elemenst">
+                    Renseignez les informations de votre carte pour payer
+                </label>
+                <div id="card-element" style="background-color: aliceblue; height: 7%;"></div>
+                <div id="card-errors" role="alert" style="color: aliceblue;"></div> -->
+                <div>
+
+                    <label for="card-elemenst">
+                        Credit or debit card
+                    </label>
+                    <div id="card-element" style="background-color: aliceblue; height: 7%;">
+                        <!-- A Stripe Element will be inserted here. -->
+                    </div>
+
+                    <!-- Used to display form errors. -->
+                    <div id="card-errors" role="alert" style="color: aliceblue;"></div>
+
                 </div>
-                
+                <h6 style="color: aliceblue;">Cliquez sur le bouton ci-dessous pour valider le paiement et valider la
+                    réservation</h6>
+                <hr>
+                <button id="payment-button" type="submit" class="contact100-form-btn">Confirmer la réservation</button>
             </form>
         </div>
     </div>
 </div>
-<script type="text/javascript"></script>
+
+<!-- Inclusion du script JavaScript de Stripe -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<!-- Script JavaScript pour gérer le formulaire de paiement -->
+<script>
+    // Create a Stripe client.
+    var stripe = Stripe('pk_test_51NGHOWAKRtGF49xx9qNSb6HE0abIHHy6Z16Qp2Qi4q6156wgUfVe8fRbfKKve018tHErqswx4MQ83l49T8RzvJTl00fJOdqp7C');
+
+    // Create an instance of Elements.
+    var elements = stripe.elements();
+
+    // Custom styling can be passed to options when creating an Element.
+    // (Note that this demo uses a wider set of styles than the guide below.)
+    var style = {
+        base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+                color: '#aab7c4'
+            }
+        },
+        invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
+        }
+    };
+
+    // Create an instance of the card Element.
+    var card = elements.create('card', { style: style });
+
+    // Add an instance of the card Element into the `card-element` <div>.
+    card.mount('#card-element');
+
+    // Handle real-time validation errors from the card Element.
+    card.addEventListener('change', function (event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    // Handle form submission.
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        stripe.createToken(card).then(function (result) {
+            if (result.error) {
+                // Inform the user if there was an error.
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+            } else {
+                // Send the token to your server.
+                stripeTokenHandler(result.token);
+            }
+        });
+    });
+
+    // Submit the form with the token ID.
+    function stripeTokenHandler(token) {
+        // Insert the token ID into the form so it gets submitted to the server
+        var form = document.getElementById('payment-form');
+        var hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('name', 'stripeToken');
+        hiddenInput.setAttribute('value', token.id);
+        form.appendChild(hiddenInput);
+
+        // Submit the form
+        form.submit();
+    }
+</script>
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Créer un objet Stripe
+        var stripe = Stripe('pk_test_51NGHOWAKRtGF49xx9qNSb6HE0abIHHy6Z16Qp2Qi4q6156wgUfVe8fRbfKKve018tHErqswx4MQ83l49T8RzvJTl00fJOdqp7C');
+
+        // Créer un élément de carte de crédit
+        var elements = stripe.elements();
+        var cardElement = elements.create('card');
+
+        // Insérer l'élément de carte de crédit dans le formulaire
+        cardElement.mount('#card-element');
+
+        // Gérer les erreurs de validation de la carte
+        var cardErrors = document.getElementById('card-errors');
+        cardElement.addEventListener('change', function (event) {
+            if (event.error) {
+                cardErrors.textContent = event.error.message;
+            } else {
+                cardErrors.textContent = '';
+            }
+        });
+
+        // Gérer la soumission du formulaire
+        var form = document.querySelector('form');
+        var submitButton = document.getElementById('payment-button');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Désactiver le bouton de soumission
+            submitButton.disabled = true;
+
+            // Créer le paiement via Stripe
+            stripe.createPaymentMethod('card', cardElement)
+                .then(function (result) {
+                    if (result.error) {
+                        // Afficher les erreurs de validation de la carte
+                        cardErrors.textContent = result.error.message;
+                        submitButton.disabled = false;  // Réactiver le bouton de soumission
+                    } else {
+                        // Ajouter le token de paiement au formulaire et soumettre le formulaire
+                        var paymentMethodIdInput = document.createElement('input');
+                        paymentMethodIdInput.setAttribute('type', 'hidden');
+                        paymentMethodIdInput.setAttribute('name', 'payment_method_id');
+                        paymentMethodIdInput.setAttribute('value', result.paymentMethod.id);
+                        form.appendChild(paymentMethodIdInput);
+
+                        form.submit();  // Soumettre le formulaire avec le token de paiement
+                    }
+                });
+        });
+    });
+</script> -->
+
 {% endblock contenu %}
-    

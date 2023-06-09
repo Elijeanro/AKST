@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'companyman',
     'dashboard',
     'crispy_forms',
+    'celery',
     'phonenumber_field',
+    
 ]
 
 MIDDLEWARE = [
@@ -131,3 +133,19 @@ STATICFILES_DIRS=[
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CELERY_APP = 'GESTION_DE_BILLET_beta2'
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'jeanrotchallapro@gmail.com'
+EMAIL_HOST_PASSWORD = 'bvnvgybeaandcynp' 
+
+VONAGE_API_KEY = '73ec7c88'
+VONAGE_API_SECRET = 'trBfMUcaUUhXZBC6'
+VONAGE_PHONE_NUMBER = '+22892101071'
+
+STRIPE_PUBLIC_KEY = 'pk_test_51NGHOWAKRtGF49xx9qNSb6HE0abIHHy6Z16Qp2Qi4q6156wgUfVe8fRbfKKve018tHErqswx4MQ83l49T8RzvJTl00fJOdqp7C'
+STRIPE_SECRET_KEY = 'sk_test_51NGHOWAKRtGF49xxamC8SgBnuRw8bTnAeivp5XHUTbVTak4LJSo6MdZ2ooeFldq7ACCVeLlhwKp6pXC2GSnYwFLo00ptjvqn6B'

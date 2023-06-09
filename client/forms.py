@@ -47,11 +47,11 @@ class BilletForm(forms.Form):
         )
     place=forms.IntegerField(
         widget=forms.NumberInput(attrs={
-            'class': 'input20',
+            'class': 'input50',
             'min':'1', 
             'max':'5',
             'placeholder':'Place'})
-        )
+        )    
     
 class ContactForm(forms.Form):
     email = forms.EmailField()

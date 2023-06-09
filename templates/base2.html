@@ -8,6 +8,7 @@
 <head>
 
     <meta charset="utf-8">
+    <!-- <meta http-equiv="refresh" content="5"> -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
@@ -15,6 +16,11 @@
     <title>{% block titre %}
 
         {% endblock titre %} </title>
+        
+        {% block head %}
+            
+        {% endblock head %}
+            
 
     <!-- Custom fonts for this template-->
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -26,7 +32,11 @@
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
 </head>
-<body id="page-top" class="bg-gradient-primary">
+<body id="page-top" class="bg-gradient-secondary">
+    <div id="logo" class="fl_left" style="color: aliceblue;">
+        <img src="{% static 'images/logo1.png' %}" alt="">
+        {% now 'd/m/Y H:i:s' %}
+      </div>
     
     {% block contenu %}
         

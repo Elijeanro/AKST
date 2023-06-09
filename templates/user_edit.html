@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{% extends 'base2.html' %}
+
+{% load static %}
+
+{% block contenu %}
+<div class="container">
+    <br>
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <h3 style="text-align: center;">Compagnie {{comp.nom_cp}} </h3>
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                            <li {% if message.tags %} class="{{ message.tags }}" {% endif %} >{{ message }}</li>
+                                {% endfor %}
+                        </ul>
+                        {% endif %}
+                <div class="contact100-pic js-tilt col-lg-5 d-none d-lg-block"><img src="{% static 'images/modele-formulaire-inscription.avif' %}" alt="IMG">
+                    </div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-black-900 mb-4">Editer votre compte!</h1>
+                        </div>
+                        <form class="user" method="post">
+                            {% csrf_token %}
+                            
+                            <div class="form-group" style="color: black;">
+                                {{ form.nom_user }}
+                            </div>
+                            <div class="form-group" style="color: black;">
+                                {{ form.prenom_user }}
+                            </div>
+                            <div class="form-group" style="color: black;">
+                                {{ form.email_user }}
+                            </div>
+                            <div class="form-group" style="color: black;">
+                                {{ form.nom_utilisateur }}
+                            </div>
+                            <div class="form-group" style="color: black;">
+                                {{ form.pw_user }}
+                            </div>
+                            <div class="form-group" style="color: black;">
+                                <input type="password" class="form-control" name="pw_user2" placeholder="Repeat Password">
+                            </div>
+                            <input type="hidden" name="personnel_actif" value="True">  <!-- Champ personnel_actif -->
+                            <button type="submit" class="btn btn-primary btn-user btn-block">Sauvegarder</button>
+                        </form><hr>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock contenu %}

@@ -36,6 +36,10 @@
                     <td>{{ billet.code_billet }}</td>
                 </tr>
                 <tr>
+                    <th style="color: black;">Compagnie</th>
+                    <td>{{ billet.infoligne_id.bus_id.compagnie_id.nom_cp }}</td>
+                </tr>
+                <tr>
                     <th style="color: black;">Prix Unitaire</th>
                     <td>{{ billet.prix }} francs CFA</td>
                 </tr>
@@ -65,7 +69,11 @@
                 </tr>
                 <tr>
                     <th style="color: black;">Date et heure d'arrivée</th>
-                    <td></td>
+                    <td>{% if infoln %}{{ infoln.date_arr|date:"d-m-Y / H:i" }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <th style="color: black;">ID du Paiement</th>
+                    <td>{{billet.id_paiement}}</td>
                 </tr>
             </table>
         </div>

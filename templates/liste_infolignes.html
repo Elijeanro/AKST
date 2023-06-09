@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% extends 'base2.html' %}
 
-
+{% load static %}
 {% block titre %}
     
 {% endblock titre %}
@@ -12,7 +12,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-secondary sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -40,21 +40,7 @@
             Interface
         </div>
 
-        <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                aria-expanded="true" aria-controls="collapseTwo">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Components</span>
-            </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Custom Components:</h6>
-                    <a class="collapse-item" href="buttons.html">Buttons</a>
-                    <a class="collapse-item" href="cards.html">Cards</a>
-                </div>
-            </div>
-        </li>
+        
 
         <!-- Nav Item - Utilities Collapse Menu -->
         <li class="nav-item">
@@ -345,15 +331,13 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-                <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-                    For more information about DataTables, please visit the <a target="_blank"
-                        href="https://datatables.net">official DataTables documentation</a>.</p>
+                <h1 class="h3 mb-2 text-gray-800">Voyages</h1>
+                
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Liste des Voyages</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -361,6 +345,7 @@
                                 <thead>
                                     <tr>
                                       <th>DATE ET HEURE DE DEPART</th>
+                                      <th>DATE ET HEURE D'ARRIVEE</th>
                                       <th>PRIX (CFA)</th>
                                       <th>PLACES DISPONIBLE</th>
                                       <th>BUS</th>
@@ -369,19 +354,27 @@
                                   <tbody>
                                 {% for i in infln %}  
                                     
-                                    
+                                    {% if i.etat_infoligne.id == 2 %}
                                     <tr>
-                                      <td> {{i.date_dep}} </td>
-                                      <td> {{i.prix}} </td>
-                                      <td> {{i.place_restante}} </td>
-                                      <td> {{i.bus_id.matricule_bus}} </td>
-                                    </tr>
-                                    
+                                        <td> {{i.date_dep}} </td>
+                                        <td> {{i.date_arr}} </td>
+                                        <td> {{i.prix}} </td>
+                                        <td> {{i.place_restante}} </td>
+                                        <td> {{i.bus_id.matricule_bus}} </td>
+                                      </tr>
+                                      
+                                    {% endif %}
                                         
                                 {% endfor %}
                               
                                   </tbody>
                                 </table>
+                                <footer class="sticky-footer bg-white">
+                                    <div class="container my-auto">
+                                        <a class="btn" href="javascript:history.go(-1);">&laquo; Revenir en arrière</a>
+                                    </div>
+                                </footer>
+                                
                         </div>
                     </div>
                 </div>
