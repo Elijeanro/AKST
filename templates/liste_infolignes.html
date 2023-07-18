@@ -337,7 +337,7 @@
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Liste des Voyages</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Liste des Voyages en programmés</h6>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -349,18 +349,22 @@
                                       <th>PRIX (CFA)</th>
                                       <th>PLACES DISPONIBLE</th>
                                       <th>BUS</th>
+                                      <th></th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                 {% for i in infln %}  
                                     
-                                    {% if i.etat_infoligne.id == 2 %}
+                                    {% if i.etat_infoligne.id == 2 and i.date_dep >= dnow %}
                                     <tr>
                                         <td> {{i.date_dep}} </td>
                                         <td> {{i.date_arr}} </td>
                                         <td> {{i.prix}} </td>
                                         <td> {{i.place_restante}} </td>
                                         <td> {{i.bus_id.matricule_bus}} </td>
+                                        <td>
+                                            <footer><a class="btn" href="{% url 'client:etape2' i.id %}">Choisir &rsaquo;</a></footer>
+                                        </td>
                                       </tr>
                                       
                                     {% endif %}

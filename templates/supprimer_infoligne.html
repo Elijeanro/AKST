@@ -51,7 +51,7 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Custom Utilities:</h6>
-                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp_id %}">Ajouter un
+                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp_id user.id %}">Ajouter un
                         utilisateur</a>
                     <a class="collapse-item" href="utilities-border.html">Supprimer un utilisateur</a>
                     <a class="collapse-item" href="utilities-animation.html">Editer un utilisateur</a>
@@ -79,7 +79,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Login Screens:</h6>
                     <a class="collapse-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Login</a>
-                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp_id %}">Register</a>
+                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp_id user.id %}">Register</a>
                     <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
                     <div class="collapse-divider"></div>
                 </div>
@@ -251,7 +251,7 @@
                                                     <td>{{ infln.bus_id.matricule_bus }}</td>
                                                 </tr>
                                             </table>
-                                            <form action="{% url 'companyman:liste_infolignes' comp_id=comp.id %}" method="POST">
+                                            <form action="{% url 'companyman:liste_infolignes' comp_id=comp.id user_id=user.id %}" method="POST">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-danger">Supprimer</button>
                                               </form>
@@ -261,7 +261,10 @@
                                                         <a class="btn" href="javascript:history.go(-1);">&laquo; Revenir en arrière</a>
                                                     </div>
                                                 </footer>
-                                                
+                                                <button class="btn btn-bd-primary " style="width: 25%; color: rgb(16, 17, 17);  font-size: 20px; font-weight: 700;">
+                                                    <a class="btn-bd-primary"
+                                                        href="{% url 'companyman:espace_compagnie_agent' user_id=user.id %}">Aller à l'accueil</a>
+                                                </button>    
                                         </div>
                                     </div>
 

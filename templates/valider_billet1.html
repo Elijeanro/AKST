@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% extends 'base2.html' %}
 
-
+{% load static %}
 {% block titre %}
     
 {% endblock titre %}
@@ -9,7 +9,7 @@
 
 {% block contenu %}
 <div class="container">
-
+    <h5 style="color: aliceblue;">Connecté en tant que {{user.prenom_user}} {{user.nom_user}} </h5>
     <!-- Outer Row -->
     <div class="row justify-content-center">
 
@@ -17,10 +17,19 @@
 
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">COMPAGNIE : {{comp.nom_cp}}</h1>
+                        </div>
+                    </div>
                     <!-- Nested Row within Card Body -->
                     <div class="row">
-                        <!-- <div class="col-lg-6 d-none d-lg-block bg-login-image"></div> -->
+                        
+                        <div class="col-lg-6 d-none d-lg-block bg-login-image"><img src="{% static 'images/backgrounds/banner2.webp' %}" alt="IMG" style="width: 110%; height: 100%;"></div>
                         <div class="col-lg-6">
+                            <div class="text-center">
+                                <h1 class="h2 text-black-1000 mb-lg-5">Validation du billet</h1>
+                            </div>
                             <div class="p-5">
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Saisir le code du billet</h1>
@@ -37,7 +46,11 @@
                                     </button>
                                     
                                     <hr>
-                                    
+                                    <footer class="sticky-footer bg-white">
+                                        <div class="container my-auto">
+                                            <a class="btn" href="javascript:history.go(-1);">&laquo; Revenir en arrière</a>
+                                        </div>
+                                    </footer>
                                 </form>
                             </div>
                         </div>

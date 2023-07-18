@@ -9,6 +9,11 @@ from .forms import InfoligneForm, UtilisateurForm, RechercherUtilisateur,Recherc
 from datetime import timedelta, datetime, date
 from django.contrib import messages
 from django.db.models import F,Sum
+from django.utils import timezone
+from . tasks import update_billets
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from django.core.mail import send_mail
 
 ville= Ville.objects.all()
 ligne= Ligne.objects.all()
@@ -65,24 +70,45 @@ def err_msg(request, comp):
     return render(request, 'err_msg.html', {'comp': comp, 'message': message})
 
 def espace_compagnie_manager(request, user_id):
+    billets = Billet.objects.filter(infoligne_id__date_dep__lt=timezone.now(), etat_billet=1)
+    
+    # Mettre à jour les billets
+    for billet in billets:
+        billet.etat_billet_id = 4
+        billet.save()
     user = get_object_or_404(Utilisateur, pk=user_id)
     user_comp_id = user.compagnie_id.id
     bus_ids = Bus.objects.filter(compagnie_id=user_comp_id).values_list('id', flat=True)
     bus = Bus.objects.filter(id__in=bus_ids)
-    
+    maintenant = datetime.now()
+
+    # Remplacer les secondes et les fractions de seconde par 0
+    nouveau_datetime = maintenant.replace(second=0, microsecond=0)
+
+    # Formater la date et l'heure selon le format souhaité
+    dnow = nouveau_datetime.strftime("%Y-%m-%d %H:%M")
     lignes = Ligne.objects.all()
     villes = Ville.objects.all()
 
     infln_ids = InfoLigne.objects.filter(bus_id__in=bus_ids).values_list('id', flat=True)
     billets = Billet.objects.filter(infoligne_id__in=infln_ids)
+    enattente = Billet.objects.filter(infoligne_id__in=infln_ids, etat_billet=1)
+    consommes = Billet.objects.filter(infoligne_id__in=infln_ids, etat_billet=2)
+    annules = Billet.objects.filter(infoligne_id__in=infln_ids, etat_billet=3)
+    expires = Billet.objects.filter(infoligne_id__in=infln_ids, etat_billet=4)
     nb_reserv=billets.count()
     nb_valid= Billet.objects.filter(infoligne_id__in=infln_ids, etat_billet=2).count()
     nb_expir= Billet.objects.filter(infoligne_id__in=infln_ids, etat_billet=4).count()
     nb_annul= Billet.objects.filter(infoligne_id__in=infln_ids, etat_billet=3).count()
     nb_en_attente= Billet.objects.filter(infoligne_id__in=infln_ids, etat_billet=1).count()
-    # le chiffre d'affaire
-    CA = Billet.objects.filter(etat_billet=2).aggregate(Sum('montant_billet'))['montant_billet__sum']
     infln = InfoLigne.objects.filter(bus_id__in=bus_ids)
+    passe = InfoLigne.objects.filter(bus_id__in=bus_ids, date_dep__lt=dnow)
+    encours = InfoLigne.objects.filter(bus_id__in=bus_ids, date_dep=dnow)
+    a_venir = InfoLigne.objects.filter(bus_id__in=bus_ids, date_dep__gt=dnow)
+    
+    # le chiffre d'affaire
+    CA = Billet.objects.filter(infoligne_id__in=infln_ids,etat_billet=2).aggregate(Sum('montant_billet'))['montant_billet__sum']
+    
     comp = Compagnie.objects.filter(id=user_comp_id).first()
 
     if user is None or comp is None:
@@ -102,6 +128,14 @@ def espace_compagnie_manager(request, user_id):
                'nb_en_attente':nb_en_attente,
                'nb_expir':nb_expir,
                'CA':CA,
+               'enattente':enattente,
+               'consommes':consommes,
+               'expires':expires,
+               'annules':annules,
+               'dnow':dnow,
+               'passe':passe,
+               'encours':encours,
+               'a_venir':a_venir,
                }
 
     return render(request, 'espace_compagnie_manager.html', context)
@@ -113,27 +147,113 @@ def espace_compagnie_agent(request, user_id):
     user_comp_id = user.compagnie_id.id
     bus_ids = Bus.objects.filter(compagnie_id=user_comp_id).values_list('id', flat=True)
     bus = Bus.objects.filter(id__in=bus_ids)
-    
+    maintenant = datetime.now()
+
+    # Remplacer les secondes et les fractions de seconde par 0
+    nouveau_datetime = maintenant.replace(second=0, microsecond=0)
+
+    # Formater la date et l'heure selon le format souhaité
+    dnow = nouveau_datetime.strftime("%Y-%m-%d %H:%M")
     lignes = Ligne.objects.all()
     villes = Ville.objects.all()
 
     infln_ids = InfoLigne.objects.filter(bus_id__in=bus_ids).values_list('id', flat=True)
     billets = Billet.objects.filter(infoligne_id__in=infln_ids)
     infln = InfoLigne.objects.filter(bus_id__in=bus_ids)
+    passe = InfoLigne.objects.filter(bus_id__in=bus_ids, date_dep__lt=dnow)
+    encours = InfoLigne.objects.filter(bus_id__in=bus_ids, date_dep=dnow)
+    a_venir = InfoLigne.objects.filter(bus_id__in=bus_ids, date_dep__gt=dnow)
     comp = Compagnie.objects.filter(id=user_comp_id).first()
     if user is None or comp is None:
         message = "Vous n'êtes pas autorisé à accéder à cet espace !"
         return render(request, 'err_msg.html', {'message': message})
 
     lignes = Ligne.objects.all()
-    context = {'utilisateur': user, 'lignes': lignes, 'comp': comp, 'billets': billets, 'bus': bus, 'villes': villes, 'infln':infln}
+    context = {'utilisateur': user,
+               'lignes': lignes,
+               'comp': comp,
+               'billets': billets,
+               'bus': bus,
+               'villes': villes,
+               'infln':infln,
+               'dnow':dnow,
+               'passe':passe,
+               'encours':encours,
+               'a_venir':a_venir,
+               }
 
     return render(request, 'espace_compagnie_agent.html', context)
 
+def recherche_billet(request,comp_id,user_id):
+    comp = get_object_or_404(Compagnie, pk=comp_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
+    if request.method == 'POST':
+        recherche = RechercheBillet(request.POST)
+        if recherche.is_valid():
+            donnees = recherche.cleaned_data
+            code = donnees['code_billet']
+            resultat = Billet.objects.filter(code_billet=code).first()
+            if resultat is not None:
+                id_billet = resultat.id
+                return redirect(reverse('companyman:validation_billet2', args=[id_billet,user_id]))
+            else:
+                message = "Aucun billet ne correspond à ce code"
+                return HttpResponse(message)
+    else:
+        recherche = RechercheBillet()
+    context = {'recherche': recherche , 'comp' : comp, 'user':user}
+    return render(request, 'valider_billet1.html', context)
 
-def creer_utilisateur(request, comp_id):
+
+def validation_billet(request, billet_id, user_id):
+    billet = get_object_or_404(Billet, id=billet_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
+    infoln = get_object_or_404(InfoLigne, id=billet.infoligne_id.id)
+    ligne = get_object_or_404(Ligne, id=infoln.ligne_id.id)
+    etatb = get_object_or_404(EtatBillet, id=billet.etat_billet.id)
+    comp = get_object_or_404(Compagnie,id=infoln.bus_id.compagnie_id.id) 
+    datebillet = infoln.date_dep.date()
+    dnow = datetime.today().date()
+    print("etat:", etatb.id)
+    print("datebillet:", datebillet)
+    print("today:", datetime.today().date())
+    context = {
+        'billet': billet, 
+        'infoln': infoln, 
+        'ligne': ligne, 
+        'etat': etatb, 
+        'comp':comp, 
+        'dnow':dnow, 
+        'datebillet':datebillet,
+        'user':user
+        }
+    return render(request, 'valider_billet2.html', context)
+from django.conf import settings
+
+def valider_billet(request, billet_id, user_id):
+    billet = get_object_or_404(Billet, id=billet_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
+    billet.etat_billet = EtatBillet.objects.get(id=2)
+    billet.bl_valide = False
+    billet.save()
+    # Envoyer l'e-mail de confirmation
+    subject = 'Confirmation de réservation'
+    message = f"Votre billet a été validé avec succès.\nVeuillez embarquer sans plus attendre\n\nNom: {billet.nom_clt}\nPrénom: {billet.prenom_clt}\nLigne: {billet.infoligne_id.ligne_id.libelle}\nCompagnie: {billet.infoligne_id.bus_id.compagnie_id.nom_cp}\nTarif: {billet.prix}\nNombre de place: {billet.place}\nMontant total: {billet.montant_billet}\nCode du billet: {billet.code_billet}\nID de paiement: {billet.id_paiement}"
+    email_from = settings.EMAIL_HOST_USER
+    recipient = billet.email_clt
+    send_mail(subject, message, email_from, [recipient])
+    
+    billet = get_object_or_404(Billet, id=billet_id)
+    infoln = get_object_or_404(InfoLigne, id=billet.infoligne_id.id)
+    ligne = get_object_or_404(Ligne, id=infoln.ligne_id.id)
+    etatb = get_object_or_404(EtatBillet, id=billet.etat_billet.id)
+    comp = get_object_or_404(Compagnie,id=infoln.bus_id.compagnie_id.id) 
+    context = {'billet': billet, 'infoln': infoln, 'ligne': ligne, 'etat': etatb, 'comp':comp, 'user':user}
+    return render(request, 'valider_billet3.html', context)
+
+def creer_utilisateur(request, comp_id, user_id):
     compagnie = get_object_or_404(Compagnie, pk=comp_id)
-
+    user = get_object_or_404(Utilisateur, pk=user_id)
     if request.method == 'POST':
         formulaire = UtilisateurForm(request.POST)
 
@@ -169,6 +289,7 @@ def creer_utilisateur(request, comp_id):
     context = {
         'form': formulaire,
         'comp': compagnie,
+        'user':user,
     }
     return render(request, 'creer_utilisateur.html', context)
 
@@ -187,12 +308,14 @@ def user_detail_view(request, user_id):
     return render(request, 'user_detail_view.html', context)
 
 
-def delete_user1(request, comp_id):
+def delete_user1(request, comp_id, user_id):
     comp = get_object_or_404(Compagnie, pk=comp_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
     users = Utilisateur.objects.filter(compagnie_id=comp_id)
     context = {
         'comp': comp,
         'users': users,
+        'user' : user,
     }
     return render(request, 'supprimer_utilisateur.html', context)
 
@@ -208,28 +331,31 @@ def delete_user2(request, user_id):
     return redirect('companyman:supprimer_utilisateur', comp_id=comp_id)
 
 
-def liste_agents(request, comp_id):
+def liste_agents(request, comp_id, user_id):
     comp = get_object_or_404(Compagnie, pk=comp_id)
     users = Utilisateur.objects.filter(compagnie_id=comp_id)
     utilisateur = Utilisateur.objects.all()
     return render(request, 'liste_agents.html', {'comp': comp, 'users': users, 'utilisateur': utilisateur})
 
 
-def liste_lignes(request, comp_id):
+def liste_lignes(request, comp_id, user_id):
     comp = get_object_or_404(Compagnie, pk=comp_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
     users = Utilisateur.objects.filter(compagnie_id=comp_id)
     lignes = Ligne.objects.all()
-    return render(request, 'liste_lignes.html', {'lignes': lignes, 'users': users, 'comp': comp})
+    return render(request, 'liste_lignes.html', {'lignes': lignes, 'users': users, 'user':user, 'comp': comp})
 
 
-def liste_bus(request):
+def liste_bus(request, user_id):
     bus = Bus.objects.all()
+    user = get_object_or_404(Utilisateur, pk=user_id)
     utilisateur = Utilisateur.objects.all()
-    return render(request, 'liste_bus.html', {'bus': bus, 'utilisateur': utilisateur})
+    return render(request, 'liste_bus.html', {'bus': bus, 'utilisateur': utilisateur, 'user' : user})
 
 
-def ajouter_infoligne(request, comp_id):
+def ajouter_infoligne(request, comp_id, user_id):
     comp = get_object_or_404(Compagnie, pk=comp_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
     infln = None
 
     if request.method == 'POST':
@@ -261,12 +387,13 @@ def ajouter_infoligne(request, comp_id):
         form = InfoligneForm(compagnie_id=comp_id)
 
         
-    context = {'comp': comp, 'form': form}
+    context = {'comp': comp, 'form': form, 'user':user,}
     return render(request, 'ajouter_infoligne.html', context)
 
 
-def supprimer_infoligne(request, infln_id):
+def supprimer_infoligne(request, infln_id, user_id):
     infln = get_object_or_404(InfoLigne, pk=infln_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
     comp = Compagnie.objects.get(id=infln.bus_id.compagnie_id.id)
     if infln.etat_infoligne.id == 2:
         infln.etat_infoligne_id = 1
@@ -280,11 +407,13 @@ def supprimer_infoligne(request, infln_id):
         'infln': infln,
         'comp_id': infln.bus_id.compagnie_id.id,
         'comp':comp,
+        'user':user,
     }
     return render(request, 'supprimer_infoligne.html', context)
 
-def infoligne_edit_view(request, infln_id):
+def infoligne_edit_view(request, infln_id, user_id):
     infln = get_object_or_404(InfoLigne, pk=infln_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
     comp = Compagnie.objects.filter(id=infln.bus_id.compagnie_id.id).first()
     if request.method == 'POST':
         formulaire = InfoligneForm(request.POST, instance=infln)
@@ -310,27 +439,32 @@ def infoligne_edit_view(request, infln_id):
         'form': formulaire,
         'infln': infln,
         'comp':comp,
+        'user':user,
     }
     return render(request, 'infoligne_edit.html', context)
 
 
 
-def detail_infoligne(request, infln_id):
+def detail_infoligne(request, infln_id, user_id):
     infln = get_object_or_404(InfoLigne, pk=infln_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
     comp = get_object_or_404(Compagnie, pk=infln.bus_id.compagnie_id.id)
-    return render(request, 'infoligne_view.html', {'comp': comp, 'infln': infln})
+    return render(request, 'infoligne_view.html', {'comp': comp, 'infln': infln, 'user':user})
 
 
-def liste_infolignes(request, comp_id):
+def liste_infolignes(request, comp_id, user_id):
     comp = get_object_or_404(Compagnie, pk=comp_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
     infln = InfoLigne.objects.filter(bus_id__compagnie_id=comp_id)
-    context = {'comp': comp, 'infln': infln}
+    dnow = datetime.now()
+    print('dnow = ',dnow)
+    context = {'comp': comp, 'infln': infln, 'user':user, 'dnow':dnow}
     return render(request, 'liste_infolignes.html', context)
 
 
-def ajouter_bus(request, comp_id):
+def ajouter_bus(request, comp_id, user_id):
     comp = get_object_or_404(Compagnie, pk=comp_id)
-
+    user = get_object_or_404(Utilisateur, pk=user_id)
     if request.method == 'POST':
         form = BusForm(request.POST)
         
@@ -355,11 +489,11 @@ def ajouter_bus(request, comp_id):
     else:
         form = BusForm()
 
-    context = {'comp': comp, 'form': form}
+    context = {'comp': comp, 'form': form, 'user':user}
             
     return render(request, 'ajouter_bus.html', context)
 
-def supprimer_bus(request, bus_id):
+def supprimer_bus(request, bus_id, user_id):
     bus = get_object_or_404(Bus, pk=bus_id)
     comp=Compagnie.objects.filter(id=bus.compagnie_id.id).first()
     if bus.etat_bus.id==2:
@@ -376,54 +510,12 @@ def supprimer_bus(request, bus_id):
     }
     return render(request, 'supprimer_bus.html', context)
 
-def detail_bus(request, bus_id):
+def detail_bus(request, bus_id, user_id):
     bus = get_object_or_404(Bus, pk=bus_id)
+    user = get_object_or_404(Utilisateur, pk=user_id)
     comp = get_object_or_404(Compagnie, pk=bus.compagnie_id.id)
     
-    return render(request, 'bus_detail_view.html', {'comp': comp, 'bus': bus})
-
-
-def recherche_billet(request):
-    if request.method == 'POST':
-        recherche = RechercheBillet(request.POST)
-        if recherche.is_valid():
-            donnees = recherche.cleaned_data
-            code = donnees['code_billet']
-            resultat = Billet.objects.filter(code_billet=code).first()
-            if resultat is not None:
-                id_billet = resultat.id
-                return redirect(reverse('companyman:validation_billet2', args=[id_billet]))
-            else:
-                message = "Aucun billet ne correspond à ce code"
-                return HttpResponse(message)
-    else:
-        recherche = RechercheBillet()
-    context = {'recherche': recherche}
-    return render(request, 'valider_billet1.html', context)
-
-
-def validation_billet(request, billet_id):
-    billet = get_object_or_404(Billet, id=billet_id)
-    infoln = get_object_or_404(InfoLigne, id=billet.infoligne_id.id)
-    ligne = get_object_or_404(Ligne, id=infoln.ligne_id.id)
-    etatb = get_object_or_404(EtatBillet, id=billet.etat_billet.id)
-    context = {'billet': billet, 'infoln': infoln, 'ligne': ligne, 'etat': etatb}
-    return render(request, 'valider_billet2.html', context)
-
-
-def valider_billet(request, billet_id):
-    billet = get_object_or_404(Billet, id=billet_id)
-    billet.etat_billet = EtatBillet.objects.get(id=2)
-    billet.bl_valide = False
-    billet.save()
-    billet = get_object_or_404(Billet, id=billet_id)
-    infoln = get_object_or_404(InfoLigne, id=billet.infoligne_id.id)
-    ligne = get_object_or_404(Ligne, id=infoln.ligne_id.id)
-    etatb = get_object_or_404(EtatBillet, id=billet.etat_billet.id)
-    context = {'billet': billet, 'infoln': infoln, 'ligne': ligne, 'etat': etatb}
-    return render(request, 'valider_billet3.html', context)
-    # return redirect('companyman:validation_billet3', billet_id=billet.id)
-
+    return render(request, 'bus_detail_view.html', {'comp': comp, 'bus': bus, 'user' : user})
 
 def forgot_password_search(request,comp_id):
     comp=get_object_or_404(Compagnie, pk=comp_id)
@@ -447,9 +539,9 @@ def forgot_password_search(request,comp_id):
     context = {'recherche': recherche, 'comp':comp}
     return render(request, 'forgot_password.html', context)
 
-def edit_user_search(request,comp_id):
+def edit_user_search(request,comp_id, user_id):
     comp=get_object_or_404(Compagnie, pk=comp_id)
-    
+    user = get_object_or_404(Utilisateur, pk=user_id)
     if request.method == 'POST':
         recherche = RechercherUtilisateur2(request.POST)
         if recherche.is_valid():
@@ -468,7 +560,7 @@ def edit_user_search(request,comp_id):
                 return HttpResponse(message)
     else:
         recherche = RechercherUtilisateur2()
-    context = {'recherche': recherche, 'comp':comp }
+    context = {'recherche': recherche, 'comp':comp, 'user' : user }
     return render(request, 'edit_user.html', context)
 
 
@@ -502,9 +594,9 @@ def user_edit_view(request, user_id):
 
 
 
-def listebus_view(request, comp_id):
+def listebus_view(request, comp_id, user_id):
     comp = get_object_or_404(Compagnie, pk=comp_id)
-    
+    user = get_object_or_404(Utilisateur, pk=user_id)
     bus_ids = Bus.objects.filter(compagnie_id=comp_id).values_list('id', flat=True)
     bus = Bus.objects.filter(id__in=bus_ids)
     
@@ -527,6 +619,7 @@ def listebus_view(request, comp_id):
                'billets': billets,
                'bus': bus,
                'villes': villes,
+               'user' : user,
                'infln':infln,
                'nb_reserv':nb_reserv,
                'nb_valid':nb_valid,
@@ -537,22 +630,3 @@ def listebus_view(request, comp_id):
                }
 
     return render(request, 'listebus.html', context)
-# def bus_search(request,bus_id):
-#     bus=get_object_or_404(Bus, pk=bus_id)
-#     comp=Compagnie.objects.filter(id=bus.compagnie_id.id)
-#     if request.method == 'POST':
-#         recherche = RechercherBus(request.POST)
-#         if recherche.is_valid():
-#             donnees = recherche.cleaned_data
-#             matricule_bus = donnees['matricule_bus']
-#             resultat = Bus.objects.filter(matricule_bus=matricule_bus).first()
-#             if resultat is not None and resultat.compagnie_id.id==comp.id and resultat.etat_bus.id==2:
-                
-#                 return redirect(reverse('companyman:bus_detail_view', args=[resultat.pk]))
-#             else:
-#                 message = "Aucune correspondance retrouvée"
-#                 return HttpResponse(message)
-#     else:
-#         recherche = RechercherUtilisateur2()
-#     context = {'recherche': recherche, 'comp':comp, 'bus':bus}
-#     return render(request, 'recherche_bus.html', context)

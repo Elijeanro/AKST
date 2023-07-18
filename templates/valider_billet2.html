@@ -9,107 +9,153 @@
 
 {% block contenu %}
 <div class="container">
-
+    <h2 style="color: aliceblue;">Compagnie : {{comp.nom_cp}} </h2>
+    <h5 style="color: aliceblue;">Connecté en tant que {{user.prenom_user}} {{user.nom_user}} / Grade :
+        {{user.grade_id.libelle_grd}} </h5>
     <!-- Outer Row -->
-    
-            <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
-                    <!-- Nested Row within Card Body -->
-                    <div class="row">
-                        <!-- <div class="col-lg-6 d-none d-lg-block bg-login-image"></div> -->
-                        <div style="margin: auto;padding: auto; width: 1000px;">
-                            <h2>Billet de voyage
-                                <p>Ligne : {% if infoln %}{{ infoln.ligne_id.ville_dep.nom_ville }} -
-                                    {{ infoln.ligne_id.ville_arr.nom_ville }}{% endif %}</p>
-                            </h2>
-                            <div class="container">
-                                <div class="row align-items-start">
-                                    <table class="table table-success table-striped">
-                                        <tr>
-                                            <th style="color: black;">Nom</th>
-                                            <td>{{ billet.nom_clt }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Prénom</th>
-                                            <td>{{ billet.prenom_clt }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Email</th>
-                                            <td>{{ billet.email_clt }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Téléphone</th>
-                                            <td>{{ billet.telephone_clt }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="row align-items-center">
-                                    <table class="table table-success table-striped">
-                                        <tr>
-                                            <th style="color: black;">Code Billet</th>
-                                            <td>{{ billet.code_billet }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Prix Unitaire</th>
-                                            <td>{{ billet.prix }} francs CFA</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Nombre de places</th>
-                                            <td>{{ billet.place }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Montant Total</th>
-                                            <td>{{ billet.montant_billet }} francs CFA</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="row align-items-end">
-                                    <table class="table table-success table-striped">
-                                        <tr>
-                                            <th style="color: black;">Etat du billet</th>
-                                            <td>{{billet.etat_billet.libelle}}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Billet valide</th>
-                                            <td>{{billet.bl_valide}}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Date et heure de départ</th>
-                                            <td>{% if infoln %}{{ infoln.date_dep|date:"d-m-Y / H:i" }}{% endif %}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">Date et heure d'arrivée</th>
-                                            <td>{% if infoln %}{{ infoln.date_arr|date:"d-m-Y / H:i" }}{% endif %}</td>
-                                        </tr>
-                                        <tr>
-                                            <th style="color: black;">ID du Paiement</th>
-                                            <td>{{billet.id_paiement}}</td>
-                                        </tr>
-                                    </table>
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+                <!-- <div class="col-lg-6 d-none d-lg-block bg-login-image"></div> -->
+                <div style="margin: auto;padding: auto; width: 1000px;">
+                    <h2>Billet de voyage
+                        <p>Ligne : {% if infoln %}{{ infoln.ligne_id.ville_dep.nom_ville }} -
+                            {{ infoln.ligne_id.ville_arr.nom_ville }}{% endif %}</p>
+                    </h2>
+                    <div class="container">
+                        <div class="row align-items-start">
+                            <table class="table table-success table-striped">
+                                <tr>
+                                    <th style="color: black;">Nom</th>
+                                    <td>{{ billet.nom_clt }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Prénom</th>
+                                    <td>{{ billet.prenom_clt }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Email</th>
+                                    <td>{{ billet.email_clt }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Téléphone</th>
+                                    <td>{{ billet.telephone_clt }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row align-items-center">
+                            <table class="table table-success table-striped">
+                                <tr>
+                                    <th style="color: black;">Code Billet</th>
+                                    <td>{{ billet.code_billet }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Prix Unitaire</th>
+                                    <td>{{ billet.prix }} francs CFA</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Nombre de places</th>
+                                    <td>{{ billet.place }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Montant Total</th>
+                                    <td>{{ billet.montant_billet }} francs CFA</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row align-items-end">
+                            <table class="table table-success table-striped">
+                                <tr>
+                                    <th style="color: black;">Etat du billet</th>
+                                    <td>{{billet.etat_billet.libelle}}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Billet valide</th>
+                                    <td>{{billet.bl_valide}}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Date et heure de départ</th>
+                                    <td>{% if infoln %}{{ infoln.date_dep|date:"d-m-Y / H:i" }}{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">Date et heure d'arrivée</th>
+                                    <td>{% if infoln %}{{ infoln.date_arr|date:"d-m-Y / H:i" }}{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th style="color: black;">ID du Paiement</th>
+                                    <td>{{billet.id_paiement}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% if datebillet == dnow %}
+                    {% if etat.id == 1 %}
+                    <form method="post" action="{% url 'companyman:validation_billet3' billet.id user.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="billet_id" value="{{ billet.id }}">
+                        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#msgModal"><i class="fas fa-check-square fa-sm fa-fw mr-2 text-gray-400"></i>Valider le
+                            billet</button>
+
+                        <div class="modal fade" id="msgModal" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Message</h5>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">Billet validé avec succès.</div>
+                                    <div class="modal-footer">
+                                        
+                                        <a class="btn btn-primary"
+                                            href="{% url 'companyman:validation_billet3' billet.id user.id %}">OK</a>
+                                    </div>
                                 </div>
                             </div>
-                            <form method="post" action="{% url 'companyman:validation_billet3' billet.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="billet_id" value="{{ billet.id }}">
-                                <button type="submit" class="btn btn-primary">Valider le billet</button>
-                            </form><br>
+                        </div>
+                    </form>
+                    <br>
+                    {% endif %}
+                    {% if etat.id == 2 %}
+                    <h3 style="color: red;">Ce billet a été consommé</h3>
+                    {% elif etat.id == 3 %}
+                    <h3 style="color: red;">Ce billet a été annulé</h3>
+                    {% elif etat.id == 4 %}
+                    <h3 style="color: red;">Ce billet est arrivé à exh3iration</h3>
+                    {% endif %}
+                    {% elif datebillet < dnow %} <h3 style="color: red;">Ce billet ne h3eut être validé aujourd'hui</h3>
+                        {% endif %}
 
-
-                            <button class="btn btn-bd-primary btn-user btn-block" style="width: 25%; color: rgb(16, 17, 17);">
-                                <a class="btn" href="{% url 'companyman:validation_billet1' %} ">&laquo; Valider un
-                                    autre billet</a>
+                        <div class="btn-group" role="group" aria-label="Boutons">
+                            <button class="btn btn-bd-primary btn-user"
+                                style="width: 25%; color: rgb(16, 17, 17); font-size: 20px; font-weight: 700;">
+                                <a href="{% url 'companyman:validation_billet1' comp_id=comp.id user_id=user.id %}">&laquo;
+                                    Valider un autre billet</a>
+                            </button>
+                            <button class="btn btn-bd-primary "
+                                style="width: 25%; color: rgb(16, 17, 17);  font-size: 20px; font-weight: 700;">
+                                <a class="btn-bd-primary"
+                                    href="{% url 'companyman:espace_compagnie_agent' user_id=user.id %}">Aller à
+                                    l'accueil</a>
                             </button>
                         </div>
 
-
-
-                        <hr>
-
-                    </div>
                 </div>
+
+
+
+                <hr>
+
             </div>
-        
-    
+        </div>
+    </div>
+
+
 
 </div>
 

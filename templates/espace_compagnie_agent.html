@@ -15,7 +15,8 @@
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fas fa-laugh-wink"></i>
             </div>
-            <div class="sidebar-brand-text mx-3"> {{utilisateur.grade_id.libelle_grd}} <sup> {{utilisateur.prenom_user}} {{utilisateur.nom_user}} </sup></div>
+            <div class="sidebar-brand-text mx-3"> {{utilisateur.grade_id.libelle_grd}} <sup> {{utilisateur.prenom_user}}
+                    {{utilisateur.nom_user}} </sup></div>
         </a>
 
         <!-- Divider -->
@@ -47,7 +48,6 @@
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Custom Components:</h6>
-                    <!-- <a class="collapse-item" href="{% url 'companyman:liste_agents' comp.id %}">Liste des agents</a> -->
                     <a class="collapse-item" href="#lignes">Liste des lignes</a>
                     <a class="collapse-item" href="#bus">Liste des bus</a>
                     <!-- <a class="collapse-item" href="#billets">Liste des billets réservés</a> -->
@@ -56,7 +56,7 @@
             </div>
         </li>
 
-        
+
 
         <!-- Divider -->
         <hr class="sidebar-divider">
@@ -77,9 +77,9 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Login Screens:</h6>
                     <a class="collapse-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Login</a>
-                    
+
                     <div class="collapse-divider"></div>
-                    </div>
+                </div>
             </div>
         </li>
 
@@ -116,8 +116,7 @@
                 </button>
 
                 <!-- Topbar Search -->
-                <form
-                    class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                     <div class="input-group">
                         <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
                             aria-label="Search" aria-describedby="basic-addon2">
@@ -144,8 +143,7 @@
                             <form class="form-inline mr-auto w-100 navbar-search">
                                 <div class="input-group">
                                     <input type="text" class="form-control bg-light border-0 small"
-                                        placeholder="Search for..." aria-label="Search"
-                                        aria-describedby="basic-addon2">
+                                        placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                                     <div class="input-group-append">
                                         <button class="btn btn-primary" type="button">
                                             <i class="fas fa-search fa-sm"></i>
@@ -156,34 +154,35 @@
                         </div>
                     </li>
 
-                    
+
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <h5><span class="mr-2 d-none d-lg-inline text-gray-600 small">Compagnie : {{comp.nom_cp}} </span></h5>
-                            <img class="img-profile rounded-circle"
-                            src="{% static 'images/bus_icon.jpg' %}">
+                            <h5><span class="mr-2 d-none d-lg-inline text-gray-600 small">Compagnie : {{comp.nom_cp}}
+                                </span></h5>
+                            <img class="img-profile rounded-circle" src="{% static 'images/bus_icon.jpg' %}">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                             aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="{% url 'client:lacompagnie' comp.id %}">
+                            <!-- <a class="dropdown-item" href="{% url 'client:lacompagnie' comp.id %}">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Profile
-                            </a>
-                            <a class="dropdown-item" href="#">
+                            </a> -->
+                            <!-- <a class="dropdown-item" href="#">
                                 <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Settings
                             </a>
                             <a class="dropdown-item" href="#">
                                 <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Activity Log
-                            </a>
+                            </a> -->
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}" data-toggle="modal" data-target="#logoutModal">
+                            <a class="dropdown-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}"
+                                data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Logout
+                                Déconnexion
                             </a>
                         </div>
                     </li>
@@ -197,193 +196,452 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                
+
 
                 <!-- Content Row -->
                 <div class="col">
+                    <div class="row">
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
 
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        
-                        <a href="{% url 'companyman:validation_billet1' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i>Valider un billet</a>
+                            <a href="{% url 'companyman:validation_billet1' comp_id=comp.id user_id=utilisateur.id %}"
+                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                    class="fas fa-check-circle fa-sm text-white-50"></i>Valider un billet</a>
+                        </div>
+                        </div>
+                        <div class="row">
+                        <div class="d-sm-flex align-items-center justify-content-between mb-lg-4">
+
+                            <a href="{% url 'client:listechoix' comp.nom_cp %}"
+                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                    class="fas fa-bus fa-sm text-white-50"></i>Réserver un billet</a>
+                        </div>
+                        </div>
                     </div>
+
                     <hr>
 
 
-                <!-- Content Row -->
+                    <!-- Content Row -->
 
-                <!-- Page Heading -->
-                <div id="bus" class="d-sm-absolute align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Liste des Bus</h1>
-                    
-                </div>
-
-                <!-- Pending Requests Card Example -->
-
-                <div class="col">
-
-                    <!-- Area Chart -->
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>IDENTIFIANT</th>
-                                        <th>IMMATRICULATION</th>
-                                        <th>NOMBRE DE PLACE</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for b in bus %}
-                                    <tr>
-                                        <td>{{ b.id }}</td>
-                                        <td>{{ b.matricule_bus }}</td>
-                                        <td>{{ b.nb_place }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                    </div>
-                </div>
-                <br><br><br><br>
-                <!-- Page Heading -->
-                <div id="villes" class="align-items-center justify-content-between mb-4"><br>
-                    <h1 class="h3 mb-0 text-gray-800">Liste des Villes</h1>
-                    
-                </div>
-
-                <!-- Pending Requests Card Example -->
-
-                <div class="row">
-
-                    <!-- Area Chart -->
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>IDENTIFIANT</th>
-                                        <th>NOM DE LA VILLE</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for v in villes %}
-                                    <tr>
-                                        <td>{{ v.id }}</td>
-                                        <td>{{ v.nom_ville }}</td>
-                                        
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        </div>
-                </div>
-                <!-- Page Heading -->
-                <div id="lignes" class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Liste des Villes</h1>
-                    
-                </div>
-                <div class="row">
-
-                    <!-- Area Chart -->
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>IDENTIFIANT</th>
-                                        <th>LIGNE</th>
-                                        <th>DUREE DU TRAJET (en minutes)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for l in lignes %}
-                                    <tr>
-                                        <td>{{ l.id }}</td>
-                                        <td>{{ l.libelle }}</td>
-                                        <td>{{ l.duree_trajet }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                    </div>
-                </div>
-                
-                <div class="row">
-
-                    
-                    <!-- Pie Chart -->
-                    <div class="col-xl-4 col-lg-5">
-                        <div class="card shadow mb-4">
-                            
-                           
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Content Row -->
-                <div class="row">
-
-                    <!-- Content Column -->
-                    <div class="col-lg-6 mb-4">
-
+                    <!-- Page Heading -->
+                    <div id="voyages" class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Liste des Voyages</h1>
 
                     </div>
+
+                    <!-- Pending Requests Card Example -->
+
+                    <div class="row">
+
+                        <!-- Area Chart -->
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#voyages-passes" aria-expanded="false"
+                                            aria-controls="voyages-passes">Voir la liste des voyages passés</button>
+                                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#voyages-en-cours" aria-expanded="false"
+                                            aria-controls="voyages-en-cours">Voir la liste des voyages en cours</button>
+                                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#voyages-a-venir" aria-expanded="false"
+                                            aria-controls="voyages-a-venir">Voir la liste des voyages à venir</button>
+                                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#voyages" aria-expanded="false" aria-controls="voyages">Voir
+                                            la
+                                            liste de tous les voyages</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="container mt-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="collapse" id="voyages-passes">
+                                            <div id="voyages-passes"
+                                                class="d-sm-flex align-items-center justify-content-between mb-4">
+                                                <h4 class="h3 mb-0 text-gray-800">Voyages passés</h4>
+                                            </div>
+                                            <table class="table table-bordered" id="dataTable2" width="100%"
+                                                cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>DATE DE DEPART</th>
+                                                        <th>LIGNE</th>
+                                                        <th>PRIX</th>
+                                                        <th>PLACE RESTANTE</th>
+                                                        <th>BUS</th>
+                                                        <th>OPTIONS</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i in passe %}
+
+                                                    {% if i.etat_infoligne.id == 2 %}
+                                                    <tr>
+                                                        <td>{{ i.date_dep }}</td>
+                                                        <td>{{ i.ligne_id.libelle }}</td>
+                                                        <td>{{ i.prix }}</td>
+                                                        <td>{{ i.place_restante}} </td>
+                                                        <td>{{ i.bus_id.matricule_bus}} </td>
+                                                        <td>
+                                                            <div class="dropdown no-arrow">
+                                                                <a class="dropdown-toggle" href="#" role="button"
+                                                                    id="dropdownMenuLink1" data-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <i
+                                                                        class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                                    aria-labelledby="dropdownMenuLink">
+                                                                    <div class="dropdown-header">Options:</div>
+                                                                    <a class="dropdown-item"
+                                                                        href="{% url 'companyman:infoligne_edit_view' i.id utilisateur.id %}">Modifier</a>
+                                                                    <a class="dropdown-item"
+                                                                        href="{% url 'companyman:supprimer_infoligne' i.id utilisateur.id %}">Supprimer</a>
+                                                                    <!-- <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#">Something else here</a> -->
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="collapse" id="voyages-en-cours">
+                                            <div id="voyages-en-cours"
+                                                class="d-sm-flex align-items-center justify-content-between mb-4">
+                                                <h4 class="h3 mb-0 text-gray-800">Voyages en cours</h4>
+                                            </div>
+                                            <table class="table table-bordered" id="dataTable2" width="100%"
+                                                cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>DATE DE DEPART</th>
+                                                        <th>LIGNE</th>
+                                                        <th>PRIX</th>
+                                                        <th>PLACE RESTANTE</th>
+                                                        <th>BUS</th>
+                                                        <th>OPTIONS</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i in encours %}
+
+                                                    {% if i.etat_infoligne.id == 2 %}
+                                                    <tr>
+                                                        <td>{{ i.date_dep }}</td>
+                                                        <td>{{ i.ligne_id.libelle }}</td>
+                                                        <td>{{ i.prix }}</td>
+                                                        <td>{{ i.place_restante}} </td>
+                                                        <td>{{ i.bus_id.matricule_bus}} </td>
+                                                        <td>
+                                                            <div class="dropdown no-arrow">
+                                                                <a class="dropdown-toggle" href="#" role="button"
+                                                                    id="dropdownMenuLink1" data-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <i
+                                                                        class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                                    aria-labelledby="dropdownMenuLink">
+                                                                    <div class="dropdown-header">Options:</div>
+                                                                    <a class="dropdown-item"
+                                                                        href="{% url 'companyman:infoligne_edit_view' i.id utilisateur.id %}">Modifier</a>
+                                                                    <a class="dropdown-item"
+                                                                        href="{% url 'companyman:supprimer_infoligne' i.id utilisateur.id %}">Supprimer</a>
+                                                                    <!-- <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#">Something else here</a> -->
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="collapse" id="voyages-a-venir">
+                                            <div id="voyages-a-venir"
+                                                class="d-sm-flex align-items-center justify-content-between mb-4">
+                                                <h4 class="h3 mb-0 text-gray-800">Voyages à venir</h4>
+                                            </div>
+                                            <table class="table table-bordered" id="dataTable2" width="100%"
+                                                cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>DATE DE DEPART</th>
+                                                        <th>LIGNE</th>
+                                                        <th>PRIX</th>
+                                                        <th>PLACE RESTANTE</th>
+                                                        <th>BUS</th>
+                                                        <th>OPTIONS</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i in a_venir %}
+
+                                                    {% if i.etat_infoligne.id == 2 %}
+                                                    <tr>
+                                                        <td>{{ i.date_dep }}</td>
+                                                        <td>{{ i.ligne_id.libelle }}</td>
+                                                        <td>{{ i.prix }}</td>
+                                                        <td>{{ i.place_restante}} </td>
+                                                        <td>{{ i.bus_id.matricule_bus}} </td>
+                                                        <td>
+                                                            <div class="dropdown no-arrow">
+                                                                <a class="dropdown-toggle" href="#" role="button"
+                                                                    id="dropdownMenuLink1" data-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <i
+                                                                        class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                                    aria-labelledby="dropdownMenuLink">
+                                                                    <div class="dropdown-header">Options:</div>
+                                                                    <a class="dropdown-item"
+                                                                        href="{% url 'companyman:infoligne_edit_view' i.id utilisateur.id %}">Modifier</a>
+                                                                    <a class="dropdown-item"
+                                                                        href="{% url 'companyman:supprimer_infoligne' i.id utilisateur.id %}">Supprimer</a>
+                                                                    <!-- <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#">Something else here</a> -->
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="collapse" id="voyages">
+                                            <div id="voyages"
+                                                class="d-sm-flex align-items-center justify-content-between mb-4">
+                                                <h4 class="h3 mb-0 text-gray-800">Tous les Voyages</h4>
+                                            </div>
+                                            <table class="table table-bordered" id="dataTable2" width="100%"
+                                                cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>DATE DE DEPART</th>
+                                                        <th>LIGNE</th>
+                                                        <th>PRIX</th>
+                                                        <th>PLACE RESTANTE</th>
+                                                        <th>BUS</th>
+                                                        <th>OPTIONS</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i in infln %}
+
+                                                    {% if i.etat_infoligne.id == 2 %}
+                                                    <tr>
+                                                        <td>{{ i.date_dep }}</td>
+                                                        <td>{{ i.ligne_id.libelle }}</td>
+                                                        <td>{{ i.prix }}</td>
+                                                        <td>{{ i.place_restante}} </td>
+                                                        <td>{{ i.bus_id.matricule_bus}} </td>
+                                                        <td>
+                                                            <div class="dropdown no-arrow">
+                                                                <a class="dropdown-toggle" href="#" role="button"
+                                                                    id="dropdownMenuLink1" data-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <i
+                                                                        class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                                    aria-labelledby="dropdownMenuLink">
+                                                                    <div class="dropdown-header">Options:</div>
+                                                                    <a class="dropdown-item"
+                                                                        href="{% url 'companyman:infoligne_edit_view' i.id utilisateur.id %}">Modifier</a>
+                                                                    <a class="dropdown-item"
+                                                                        href="{% url 'companyman:supprimer_infoligne' i.id utilisateur.id %}">Supprimer</a>
+                                                                    <!-- <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#">Something else here</a> -->
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <!-- Page Heading -->
+                        <div id="villes" class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">Liste des Villes</h1>
+
+                        </div>
+
+                        <!-- Pending Requests Card Example -->
+
+                        <div class="row">
+
+                            <!-- Area Chart -->
+
+                            <div class="card-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#liste-villes" aria-expanded="false"
+                                                aria-controls="liste-villes">Voir la liste</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="container mt-3">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse" id="liste-villes">
+                                                <div id="liste-villes"
+                                                    class="d-sm-flex align-items-center justify-content-between mb-4">
+                                                    <h4 class="h3 mb-0 text-gray-800">Les villes</h4>
+                                                </div>
+                                                <table class="table table-bordered" id="dataTable2" width="100%"
+                                                    cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>IDENTIFIANT</th>
+                                                            <th>NOM DE LA VILLE</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for v in villes %}
+                                                        <tr>
+                                                            <td>{{ v.id }}</td>
+                                                            <td>{{ v.nom_ville }}</td>
+
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Page Heading -->
+                        <div id="lignes" class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">Liste des lignes</h1>
+
+                        </div>
+                        <div class="row">
+
+                            <!-- Area Chart -->
+                            <div class="card-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col">
+                                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#liste-lignes" aria-expanded="false"
+                                                aria-controls="liste-lignes">Voir la liste</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="container mt-3">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="collapse" id="liste-lignes">
+                                                <div id="liste-lignes"
+                                                    class="d-sm-flex align-items-center justify-content-between mb-4">
+                                                    <h4 class="h3 mb-0 text-gray-800">Les lignes</h4>
+                                                </div>
+                                                <table class="table table-bordered" id="dataTable2" width="100%"
+                                                    cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>IDENTIFIANT</th>
+                                                            <th>LIGNE</th>
+                                                            <th>DUREE DU TRAJET</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for l in lignes %}
+                                                        <tr>
+                                                            <td>{{ l.id }}</td>
+                                                            <td>{{ l.libelle }}</td>
+                                                            <td>{{ l.duree_trajet }}</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Content Row -->
+
+                    </div>
+                    <!-- /.container-fluid -->
+
                 </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Your Website 2021</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
 
             </div>
-            <!-- /.container-fluid -->
+            <!-- End of Content Wrapper -->
 
         </div>
-        <!-- End of Main Content -->
+        <!-- End of Page Wrapper -->
 
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2021</span>
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Cliquez sur "Déconnexion" pour mettre fin à la session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                        <a class="btn btn-primary"
+                            href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Déconnexion</a>
+                    </div>
                 </div>
-            </div>
-        </footer>
-        <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Logout</a>
             </div>
         </div>
     </div>
-</div>
-
-{% endblock contenu %}
-    
+    {% endblock contenu %}

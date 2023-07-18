@@ -34,8 +34,8 @@
         <hr class="sidebar-divider">
 
         <!-- Heading -->
-        
-        
+
+
 
         <!-- Divider -->
         <hr class="sidebar-divider">
@@ -56,13 +56,14 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Login Screens:</h6>
                     <a class="collapse-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Login</a>
-                    <a class="collapse-item" href="{% url 'companyman:edit_user_search' comp.id %}">Editer un compte</a>
+                    <a class="collapse-item" href="{% url 'companyman:edit_user_search' comp.id user.id %}">Editer un
+                        compte</a>
                     <div class="collapse-divider"></div>
                 </div>
             </div>
         </li>
 
-        
+
 
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
@@ -171,7 +172,7 @@
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Compte Utilisateur</h1>
-                    </div>
+                </div>
                 <div class="container-fluid">
                     <!-- Content Row -->
                     <div class="row">
@@ -195,7 +196,8 @@
                                             <div class="fl_left">
                                                 <img src="{% static 'images/profile-pic2.png' %}" alt="">
                                             </div>
-                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <table class="table table-bordered" id="dataTable" width="100%"
+                                                cellspacing="0">
                                                 <tr>
                                                     <th style="color: black;">Nom</th>
                                                     <td>{{ user.nom_user }}</td>
@@ -215,7 +217,7 @@
 
                                             </table>
                                             <table class="table table-success table-striped">
-                                                
+
                                                 <tr>
                                                     <th style="color: black;">Nom d'utilisateur</th>
                                                     <td>{{ user.nom_utilisateur }}</td>
@@ -232,10 +234,15 @@
                                             </table>
                                             <footer class="sticky-footer bg-white">
                                                 <div class="container my-auto">
-                                                    <a class="btn" href="javascript:history.go(-1);">&laquo; Revenir en arrière</a>
+                                                    <a class="btn btn-bd-primary" 
+                                                        href="javascript:history.go(-1);">&laquo; Revenir en arrière</a>
                                                 </div>
+
                                             </footer>
-                                            
+                                            <button class="btn btn-bd-primary " style="width: 25%; color: rgb(16, 17, 17);  font-size: 20px; font-weight: 700;">
+                                                <a class="btn-bd-primary"
+                                                    href="{% url 'companyman:espace_compagnie_agent' user_id=user.id %}">Aller à l'accueil</a>
+                                            </button>
                                         </div>
                                     </div>
 
@@ -272,7 +279,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2021</span>
+                    <span>Copyright &copy; AKST 2022</span>
                 </div>
             </div>
         </footer>

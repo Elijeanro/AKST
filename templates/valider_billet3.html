@@ -9,16 +9,17 @@
 
 {% block contenu %}
 <div class="container">
-
+    <h2 style="color: aliceblue;">Compagnie : {{comp.nom_cp}} </h2>
+    <h5 style="color: aliceblue;">Connecté en tant que {{user.prenom_user}} {{user.nom_user}} / Grade : {{user.grade_id.libelle_grd}} </h5>
     <!-- Outer Row -->
-    
+    <i class="fas fa-check-square fa-lg fa-fw mr-lg-1 text-gray-300 d-inline-block">Billet validé avec succès!</i>
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
                     <!-- Nested Row within Card Body -->
                     <div class="row">
                         <!-- <div class="col-lg-6 d-none d-lg-block bg-login-image"></div> -->
                         <div style="margin: auto;padding: auto; width: 1000px;">
-                            <h2>Billet de voyage
+                            <h2>Détails du Billet
                                 <p>Ligne : {% if infoln %}{{ infoln.ligne_id.ville_dep.nom_ville }} -
                                     {{ infoln.ligne_id.ville_arr.nom_ville }}{% endif %}</p>
                             </h2>
@@ -89,8 +90,14 @@
                                 </div>
                             </div>
                             <button class="btn btn-bd-primary btn-user btn-block" style="width: 25%; color: rgb(16, 17, 17);">
-                                <a class="btn" href="{% url 'companyman:validation_billet1' %} ">&laquo; Valider un
+                                <a class="btn" href="{% url 'companyman:validation_billet1' comp.id user.id %} ">&laquo; Valider un
                                     autre billet</a>
+                            </button>
+                            <button class="btn btn-bd-primary "
+                                style="width: 25%; color: rgb(16, 17, 17);  font-size: 20px; font-weight: 700;">
+                                <a class="btn-bd-primary"
+                                    href="{% url 'companyman:espace_compagnie_agent' user_id=user.id %}">Aller à
+                                    l'accueil</a>
                             </button>
                         </div>
 

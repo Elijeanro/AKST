@@ -6,6 +6,7 @@ from crispy_forms.layout import Layout, Submit
 from .functions import liste_infoligne,liste_ville
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
+from phonenumbers import parse, PhoneNumberFormat,is_valid_number_for_region,NumberParseException,PhoneNumber
 import phonenumbers
 import datetime
 
@@ -42,8 +43,8 @@ class BilletForm(forms.Form):
     email_clt=forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'input100', 'placeholder':'E-mail'})
         )
-    telephone_clt=PhoneNumberField(
-        widget=PhoneNumberPrefixWidget(attrs={'class': 'input100', 'placeholder':'Téléphone'})
+    telephone_clt = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'input100', 'placeholder': 'Téléphone'})
         )
     place=forms.IntegerField(
         widget=forms.NumberInput(attrs={
@@ -51,7 +52,18 @@ class BilletForm(forms.Form):
             'min':'1', 
             'max':'5',
             'placeholder':'Place'})
-        )    
+        )
+    def clean_telephone_clt(self):
+        telephone = self.cleaned_data['telephone_clt']
+        try:
+            parsed_number = phonenumbers.parse(telephone, "TG")
+            parsed_number.national_number = int(parsed_number.national_number)  # Convert to integer
+            formatted_number = phonenumbers.format_number(parsed_number, PhoneNumberFormat.E164)
+            return formatted_number
+        except phonenumbers.phonenumberutil.NumberParseException:
+            raise forms.ValidationError("Erreur lors de l'analyse du numéro de téléphone.")
+        except ValueError:
+            raise forms.ValidationError("Numéro de téléphone invalide.")
     
 class ContactForm(forms.Form):
     email = forms.EmailField()

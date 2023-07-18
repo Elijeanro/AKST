@@ -17,7 +17,7 @@
           <ul>
             {% for i in lignes %}
             <li>
-              <a href="{% url 'client:info_par_ligne' ligne=i.libelle %}">{{i.libelle}}</a>
+              <a href="{% url 'client:info_par_ligne' ligne=i.libelle nom=nom %}">{{i.libelle}}</a>
             </li>
             {% endfor %}
           </ul>
@@ -48,9 +48,18 @@
 
       </div>
       <div class="container-contact100-form-btn" style="width: 45%;">
+        
+        {% if nom == "client" %}
         <button class="contact100-form-btn">
           <a class="contact100-form-btn" href="{% url 'client:accueil' %} ">&laquo; Revenir à la page d'accueil</a>
         </button>
+        {% else %}
+        <div class="container my-auto">
+          <a class="btn" href="javascript:history.go(-1);">&laquo; Revenir en arrière</a>
+      </div>
+        
+        {% endif %}
+          
       </div>
       
     </main>

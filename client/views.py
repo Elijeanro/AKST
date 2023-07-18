@@ -25,9 +25,10 @@ from django.core.mail import send_mail
 from . import forms, models
 from django.conf import settings
 from vonage import Client, Sms
-from phonenumbers import PhoneNumberFormat
+from phonenumbers import PhoneNumberFormat,format_number
 from phonenumber_field.phonenumber import PhoneNumber
 import stripe
+from .tasks import update_billets
       
 lecode=code(8)
 ville= Ville.objects.all()
@@ -39,6 +40,8 @@ dnow= datetime.date.today()
 dateheure=datetime.datetime.now()
 etat=models.EtatBillet.objects.all()
 lesdates=InfoLigne.objects.filter(date_dep__gt=datetime.datetime.now()).values_list('date_dep')
+from .tasks import update_billets
+
 
 def accueil_view(request):
     context = {
@@ -64,21 +67,29 @@ def reservation1_view(request):
     return render(request,'reservation_etape1.html',context)
 
 
-def listechoix_view(request):
+def listechoix_view(request,nom):
+    
     ligne= Ligne.objects.all()
-    infln= InfoLigne.objects.all()
     context={'rdt':lesdates,
-             'infln':infln,
-             'lignes':ligne,}
+             'lignes':ligne,
+             'nom':nom}
     return render(request,'listechoix.html',context)
 
-def info_par_ligne_view(request, ligne):
+def info_par_ligne_view(request, ligne,nom):
+    
+    if nom == 'client':
+        infln = InfoLigne.objects.filter(ligne_id=id_ligne,date_dep__gt=datetime.datetime.now(),place_restante__gt=0)
+    else:
+        comp = get_object_or_404(Compagnie, nom_cp=nom)
+        bus = Bus.objects.filter(compagnie_id=comp.id)
+        bus_ids = bus.values_list('id', flat=True)  
+        infln = InfoLigne.objects.filter(bus_id__in=bus_ids, date_dep__gt=datetime.datetime.now(), place_restante__gt=0)
     la_ligne = Ligne.objects.filter(libelle=ligne).first()
     if la_ligne:
         id_ligne = la_ligne.id
         context = {
             'la_ligne': la_ligne,
-            'infln': InfoLigne.objects.filter(ligne_id=id_ligne,date_dep__gt=datetime.datetime.now(),place_restante__gt=0)
+            'infln': infln
         }
         return render(request, 'info_par_ligne.html', context)
     else:
@@ -101,21 +112,6 @@ def update_places_disponibles(infoligne_id, nb_places_res):
     infoligne.place_restante -= nb_places_res
     infoligne.save()
     
-
-def envoie_sms(phone_number, message):
-    # Convertissez l'objet PhoneNumber en format E.164
-    formatted_number = phone_number.as_e164
-
-    # Votre code d'envoi de SMS en utilisant Vonage APIs
-    client = Client(key='73ec7c88', secret='trBfMUcaUUhXZBC6')
-    sms = Sms(client)
-
-    # Envoyez le SMS en utilisant le numéro de téléphone formaté
-    sms.send_message({
-        "from": "+22892101071",  # Votre numéro Vonage
-        "to": formatted_number,
-        "text": message
-    })
 
 stripe.api_key = 'sk_test_51NGHOWAKRtGF49xxamC8SgBnuRw8bTnAeivp5XHUTbVTak4LJSo6MdZ2ooeFldq7ACCVeLlhwKp6pXC2GSnYwFLo00ptjvqn6B'
 
@@ -171,12 +167,32 @@ def reservation2_view(request, res_id):
                     billet.id_paiement=charge.id
                     billet.save()
                     update_places_disponibles(context['inf'].pk, donnees['place'])
+                    
                     # Envoyer l'e-mail de confirmation
                     subject = 'Confirmation de réservation'
-                    message = f"Votre réservation a été effectuée avec succès.\n\nNom: {donnees['nom_clt']}\nPrénom: {donnees['prenom_clt']}\nLigne: {context['ligne']}\nCompagnie: {context['compagnie']}\nTarif: {context['prix']}\nNombre de place: {donnees['place']}\nMontant total: {montant}\nCode du billet: {lecode}\n\nID de paiement: {charge.id}"  # Utilisez charge.id au lieu de payment_intent_id
+                    message = f"Votre réservation a été effectuée avec succès.\n\nNom: {donnees['nom_clt']}\nPrénom: {donnees['prenom_clt']}\nLigne: {context['ligne']}\nCompagnie: {context['compagnie']}\nTarif: {context['prix']}\nNombre de place: {donnees['place']}\nMontant total: {montant}\nCode du billet: {lecode}\nID de paiement: {charge.id}"
                     email_from = settings.EMAIL_HOST_USER
                     recipient = donnees['email_clt']
                     send_mail(subject, message, email_from, [recipient])
+                    
+                    # Envoie de sms
+                    phone_number = donnees['telephone_clt']
+                    texto = f"Succès de réservation.\n\nNom: {donnees['nom_clt']}\nPrénom: {donnees['prenom_clt']}\nLigne: {context['ligne']}\nCompagnie: {context['compagnie']}\nTarif: {context['prix']}\nNombre de place: {donnees['place']}\nMontant total: {montant}\nCode du billet: {lecode}\nID de paiement: {charge.id}\n\nVeuillez vous présenter au guichet de control de billet au plus tard 30 minutes avant embarquement.\nFaites bon voyage.\nCordialement."
+                    vonage = Client(key='73ec7c88', secret='trBfMUcaUUhXZBC6')
+                    le_sms = Sms(vonage)
+                    responseData = le_sms.send_message(
+                        {
+                            "from": "Vonage APIs",
+                            "to": phone_number,
+                            "text": texto,
+                        }
+                    )
+
+                    if responseData["messages"][0]["status"] == "0":
+                        print('Le SMS a été envoyé avec succès !')
+                    else:
+                        print(f"Échec de l\'envoi du SMS : {responseData['messages'][0]['error-text']}")
+
                     return redirect(reverse('client:billet_detail_view', args=[billet.id]))
                 except stripe.error.CardError as e:
                     print(e)
@@ -193,9 +209,9 @@ def reservation2_view(request, res_id):
                 except stripe.error.StripeError as e:
                     print(e)
                     return HttpResponse("<h1>Stripe error!</h1>")
-                except Exception as e:
-                    print(e)
-                    return HttpResponse("<h1>An error occurred!</h1>")
+                # except Exception as e:
+                #     # print(e)
+                #     return HttpResponse("<h1>An error occurred!</h1>")
             else:
                 error_msg = "Nombre de places indisponible"
                 formulaire.add_error('place', error_msg)
@@ -223,7 +239,6 @@ def billet_detail_view(request, billet_id):
         'ligne': ligne,  # Ajouter l'objet ligne dans le contexte
     }
     return render(request, 'billet_detail.html', context)
-
 
 
 def generate_pdf(request, billet_id):

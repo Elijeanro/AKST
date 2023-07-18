@@ -4,9 +4,9 @@
 
 {% block contenu %}
 <div style="margin: auto;padding: auto; width: 1000px;">
-    <h2>Billet de voyage 
-        <p>Ligne : {% if infoln %}{{ infoln.ligne_id.ville_dep.nom_ville }} - 
-            {{ infoln.ligne_id.ville_arr.nom_ville }}{% endif %}</p> 
+    <h2>Billet de voyage
+        <p>Ligne : {% if infoln %}{{ infoln.ligne_id.ville_dep.nom_ville }} -
+            {{ infoln.ligne_id.ville_arr.nom_ville }}{% endif %}</p>
     </h2>
     <div class="container">
         <div class="row align-items-start">
@@ -19,11 +19,11 @@
                     <th style="color: black;">Prénom</th>
                     <td>{{ billet.prenom_clt }}</td>
                 </tr>
-                <tr >
+                <tr>
                     <th style="color: black;">Email</th>
                     <td>{{ billet.email_clt }}</td>
                 </tr>
-                <tr >
+                <tr>
                     <th style="color: black;">Téléphone</th>
                     <td>{{ billet.telephone_clt }}</td>
                 </tr>
@@ -77,18 +77,24 @@
                 </tr>
             </table>
         </div>
+        <p><h6>Votre réservation a été faite avec succès. Veuillez consulter votre email pour les détails de votre billet</h6></p>
+        <p><h4>Veuillez vous présenter au guichet de control de billet au plus tard 30 minutes avant embarquement.</h4></p>
     </div>
-     <a href="{% url 'client:generate_pdf' billet_id=billet.id %}">Télécharger en PDF</a>
+    
+    <div  class="btn-group" role="group" aria-label="Boutons">
+        <footer><a class="btn-bd-download" href="{% url 'client:generate_pdf' billet_id=billet.id %}">Télécharger en PDF</a></footer>
 
-    <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer><br>
-    <script>
-      $(document).ready(function () {
-        $('#tableau').DataTable({
-            dom:'f',
-            language: {
-                url: "DataTables/media/french.json"},
-        });
-    });
-    </script>
+        <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer><br>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#tableau').DataTable({
+                dom: 'f',
+                language: {
+                    url: "DataTables/media/french.json"
+                },
+            });
+        });
+    </script>
+</div>
 {% endblock contenu %}

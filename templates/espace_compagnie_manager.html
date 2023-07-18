@@ -15,7 +15,8 @@
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fas fa-laugh-wink"></i>
             </div>
-            <div class="sidebar-brand-text mx-3"> {{utilisateur.grade_id.libelle_grd}} <sup> {{utilisateur.prenom_user}} {{utilisateur.nom_user}} </sup></div>
+            <div class="sidebar-brand-text mx-3"> {{utilisateur.grade_id.libelle_grd}} <sup> {{utilisateur.prenom_user}}
+                    {{utilisateur.nom_user}} </sup></div>
         </a>
 
         <!-- Divider -->
@@ -47,7 +48,8 @@
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Custom Components:</h6>
-                    <a class="collapse-item" href="{% url 'companyman:liste_agents' comp.id %}">Liste des agents</a>
+                    <a class="collapse-item" href="{% url 'companyman:liste_agents' comp.id utilisateur.id %}">Liste des
+                        agents</a>
                     <a class="collapse-item" href="#lignes">Liste des lignes</a>
                     <a class="collapse-item" href="#bus">Liste des bus</a>
                     <a class="collapse-item" href="#billets">Liste des billets réservés</a>
@@ -68,18 +70,25 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Utilisateurs:</h6>
-                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp.id %}">Ajouter un utilisateur</a>
-                    <a class="collapse-item" href="{% url 'companyman:supprimer_utilisateur' comp.id %}">Supprimer un utilisateur</a>
-                    <a class="collapse-item" href="{% url 'companyman:edit_user_search' comp.id %}">Editer un compte</a>
-                    </div>
+                    <a class="collapse-item"
+                        href="{% url 'companyman:creer_utilisateur' comp.id utilisateur.id %}">Ajouter un
+                        utilisateur</a>
+                    <a class="collapse-item"
+                        href="{% url 'companyman:supprimer_utilisateur' comp.id utilisateur.id %}">Supprimer un
+                        utilisateur</a>
+                    <a class="collapse-item"
+                        href="{% url 'companyman:edit_user_search' comp.id utilisateur.id %}">Editer un compte</a>
+                </div>
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Voyages:</h6>
-                    <a class="collapse-item" href="{% url 'companyman:ajouter_infoligne' comp.id %}">Ajouter un Voyage</a>
-                    </div>
+                    <a class="collapse-item"
+                        href="{% url 'companyman:ajouter_infoligne' comp.id utilisateur.id %}">Ajouter un Voyage</a>
+                </div>
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Bus:</h6>
-                    <a class="collapse-item" href="{% url 'companyman:ajouter_bus' comp.id %}">Ajouter un Bus</a>
-                    </div>
+                    <a class="collapse-item" href="{% url 'companyman:ajouter_bus' comp.id utilisateur.id %}">Ajouter un
+                        Bus</a>
+                </div>
             </div>
         </li>
 
@@ -101,15 +110,17 @@
             <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Login Screens:</h6>
-                    <a class="collapse-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Login</a>
-                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp.id %}">Register</a>
-                    <a class="collapse-item" href="{% url 'companyman:forgot_password' comp.id %}">Forgot Password</a>
+                    <a class="collapse-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Connexion</a>
+                    <a class="collapse-item"
+                        href="{% url 'companyman:creer_utilisateur' comp.id utilisateur.id %}">Créer un compte</a>
+                    <a class="collapse-item" href="{% url 'companyman:forgot_password' comp.id %}">Mot de
+                        passe oublié</a>
                     <div class="collapse-divider"></div>
-                    </div>
+                </div>
             </div>
         </li>
 
-       
+
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
 
@@ -136,8 +147,7 @@
                 </button>
 
                 <!-- Topbar Search -->
-                <form
-                    class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                     <div class="input-group">
                         <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
                             aria-label="Search" aria-describedby="basic-addon2">
@@ -164,8 +174,7 @@
                             <form class="form-inline mr-auto w-100 navbar-search">
                                 <div class="input-group">
                                     <input type="text" class="form-control bg-light border-0 small"
-                                        placeholder="Search for..." aria-label="Search"
-                                        aria-describedby="basic-addon2">
+                                        placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                                     <div class="input-group-append">
                                         <button class="btn btn-primary" type="button">
                                             <i class="fas fa-search fa-sm"></i>
@@ -176,14 +185,14 @@
                         </div>
                     </li>
 
-                    
+
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <h5><span class="mr-2 d-none d-lg-inline text-gray-600 small">Compagnie : {{comp.nom_cp}} </span></h5>
-                            <img class="img-profile rounded-circle"
-                            src="{% static 'images/bus_icon.jpg' %}">
+                            <h5><span class="mr-2 d-none d-lg-inline text-gray-600 small">Compagnie : {{comp.nom_cp}}
+                                </span></h5>
+                            <img class="img-profile rounded-circle" src="{% static 'images/bus_icon.jpg' %}">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -201,9 +210,10 @@
                                 Activity Log
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}" data-toggle="modal" data-target="#logoutModal">
+                            <a class="dropdown-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}"
+                                data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Logout
+                                Déconnexion
                             </a>
                         </div>
                     </li>
@@ -268,11 +278,13 @@
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Réservations annulées
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Réservations
+                                            annulées
                                         </div>
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-auto">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{nb_annul}}</div>
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{nb_annul}}
+                                                </div>
                                             </div>
                                             <!-- <div class="col">
                                                 <div class="progress progress-sm mr-2">
@@ -347,7 +359,7 @@
                 <!-- Page Heading -->
                 <div id="bus" class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Liste des Bus</h1>
-                    
+
                 </div>
 
                 <!-- Pending Requests Card Example -->
@@ -368,7 +380,7 @@
                                 </thead>
                                 <tbody>
                                     {% for b in bus %}
-                                    
+
                                     {% if b.etat_bus.id == 2 %}
                                     <tr>
                                         <td>{{ b.id }}</td>
@@ -382,7 +394,8 @@
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                                     aria-labelledby="dropdownMenuLink">
-                                                    <a class="dropdown-item" href="{% url 'companyman:supprimer_bus' b.id %}">Supprimer</a>
+                                                    <a class="dropdown-item"
+                                                        href="{% url 'companyman:supprimer_bus' b.id utilisateur.id %}">Supprimer</a>
                                                     <!-- <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" href="#">Something else here</a> -->
                                                 </div>
@@ -390,18 +403,18 @@
                                         </td>
                                     </tr>
                                     {% endif %}
-                                        
+
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                        
+
                     </div>
                 </div>
                 <!-- Page Heading -->
                 <div id="billets" class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Liste des Réservations</h1>
-                    
+
                 </div>
 
                 <!-- Pending Requests Card Example -->
@@ -410,49 +423,270 @@
 
                     <!-- Area Chart -->
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>DATE ET HEURE DE RESERVATION</th>
-                                        <th>NOM ET PRENOM</th>
-                                        <!-- <th>EMAIL</th>
-                                        <th>TELEPHONE</th> -->
-                                        <th>LIGNE</th>
-                                        <th>PRIX</th>
-                                        <th>NOMBRE DE PLACE</th>
-                                        <th>MONTANT</th>
-                                        <th>DATE ET HEURE DE DEPART</th>
-                                        <th>DATE ET HEURE D'ARRIVEE</th>
-                                        <th>ETAT</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for r in billets %}
-                                    <tr>
-                                        <td>{{ r.date_heure }}</td>
-                                        <td>{{ r.nom_clt }} {{r.prenom_clt}} </td>
-                                        <!-- <td>{{r.email_clt}} </td>
-                                        <td>{{r.telephone_clt}} </td> -->
-                                        <td>{{r.infoligne_id.ligne_id.libelle}} </td>
-                                        <td>{{r.prix}} </td>
-                                        <td>{{r.place}} </td>
-                                        <td>{{r.montant_billet}} </td>
-                                        <td>{{r.infoligne_id.date_dep}} </td>
-                                        <td>{{r.infoligne_id.date_arr}} </td>
-                                        <td>{{ r.etat_billet.libelle }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#billets-consommes" aria-expanded="false"
+                                        aria-controls="billets-consommes">Billets consommés</button>
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#billets-expires" aria-expanded="false"
+                                        aria-controls="billets-expires">Billets expirés</button>
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#billets-enattente" aria-expanded="false"
+                                        aria-controls="billets-enattente">Billets en Attente</button>
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#billets-annules" aria-expanded="false"
+                                        aria-controls="billets-annules">Billets annulés</button>
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#billets" aria-expanded="false" aria-controls="billets">Tous les
+                                        Billets</button>
+                                </div>
+                            </div>
                         </div>
-                        
+
+                        <div class="container mt-3">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="collapse" id="billets-consommes">
+                                        <div id="billets-consommes"
+                                            class="d-sm-flex align-items-center justify-content-between mb-4">
+                                            <h4 class="h3 mb-0 text-gray-800">Réservations consommées</h4>
+
+                                        </div>
+                                        <table class="table table-bordered" id="dataTable2" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>DATE ET HEURE DE RESERVATION</th>
+                                                    <th>NOM ET PRENOM</th>
+                                                    <!-- <th>EMAIL</th>
+                                                    <th>TELEPHONE</th> -->
+                                                    <th>LIGNE</th>
+                                                    <th>PRIX</th>
+                                                    <th>NOMBRE DE PLACE</th>
+                                                    <th>MONTANT</th>
+                                                    <th>DATE ET HEURE DE DEPART</th>
+                                                    <th>DATE ET HEURE D'ARRIVEE</th>
+                                                    <th>ETAT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for r in consommes %}
+                                                <tr data-bs-toggle="collapse"
+                                                    data-bs-target="#details_{{ forloop.counter }}"
+                                                    aria-expanded="false" aria-controls="details_{{ forloop.counter }}">
+                                                    <td>{{ r.date_heure }}</td>
+                                                    <td>{{ r.nom_clt }} {{r.prenom_clt}} </td>
+                                                    <!-- <td>{{r.email_clt}} </td>
+                                                    <td>{{r.telephone_clt}} </td> -->
+                                                    <td>{{r.infoligne_id.ligne_id.libelle}} </td>
+                                                    <td>{{r.prix}} </td>
+                                                    <td>{{r.place}} </td>
+                                                    <td>{{r.montant_billet}} </td>
+                                                    <td>{{r.infoligne_id.date_dep}} </td>
+                                                    <td>{{r.infoligne_id.date_arr}} </td>
+                                                    <td>{{ r.etat_billet.libelle }}</td>
+                                                </tr>
+
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="collapse" id="billets-expires">
+                                        <div id="billets-expires"
+                                            class="d-sm-flex align-items-center justify-content-between mb-4">
+                                            <h4 class="h3 mb-0 text-gray-800">Réservations expirées</h4>
+
+                                        </div>
+                                        <table class="table table-bordered" id="dataTable2" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>DATE ET HEURE DE RESERVATION</th>
+                                                    <th>NOM ET PRENOM</th>
+                                                    <!-- <th>EMAIL</th>
+                                                    <th>TELEPHONE</th> -->
+                                                    <th>LIGNE</th>
+                                                    <th>PRIX</th>
+                                                    <th>NOMBRE DE PLACE</th>
+                                                    <th>MONTANT</th>
+                                                    <th>DATE ET HEURE DE DEPART</th>
+                                                    <th>DATE ET HEURE D'ARRIVEE</th>
+                                                    <th>ETAT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for r in expires %}
+                                                <tr data-bs-toggle="collapse"
+                                                    data-bs-target="#details_{{ forloop.counter }}"
+                                                    aria-expanded="false" aria-controls="details_{{ forloop.counter }}">
+                                                    <td>{{ r.date_heure }}</td>
+                                                    <td>{{ r.nom_clt }} {{r.prenom_clt}} </td>
+                                                    <!-- <td>{{r.email_clt}} </td>
+                                                    <td>{{r.telephone_clt}} </td> -->
+                                                    <td>{{r.infoligne_id.ligne_id.libelle}} </td>
+                                                    <td>{{r.prix}} </td>
+                                                    <td>{{r.place}} </td>
+                                                    <td>{{r.montant_billet}} </td>
+                                                    <td>{{r.infoligne_id.date_dep}} </td>
+                                                    <td>{{r.infoligne_id.date_arr}} </td>
+                                                    <td>{{ r.etat_billet.libelle }}</td>
+                                                </tr>
+
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="collapse" id="billets-enattente">
+                                        <div id="billets-enattente"
+                                            class="d-sm-flex align-items-center justify-content-between mb-4">
+                                            <h4 class="h3 mb-0 text-gray-800">Réservations en attente</h4>
+
+                                        </div>
+                                        <table class="table table-bordered" id="dataTable2" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>DATE ET HEURE DE RESERVATION</th>
+                                                    <th>NOM ET PRENOM</th>
+                                                    <!-- <th>EMAIL</th>
+                                                    <th>TELEPHONE</th> -->
+                                                    <th>LIGNE</th>
+                                                    <th>PRIX</th>
+                                                    <th>NOMBRE DE PLACE</th>
+                                                    <th>MONTANT</th>
+                                                    <th>DATE ET HEURE DE DEPART</th>
+                                                    <th>DATE ET HEURE D'ARRIVEE</th>
+                                                    <th>ETAT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for r in enattente %}
+                                                <tr data-bs-toggle="collapse"
+                                                    data-bs-target="#details_{{ forloop.counter }}"
+                                                    aria-expanded="false" aria-controls="details_{{ forloop.counter }}">
+                                                    <td>{{ r.date_heure }}</td>
+                                                    <td>{{ r.nom_clt }} {{r.prenom_clt}} </td>
+                                                    <!-- <td>{{r.email_clt}} </td>
+                                                    <td>{{r.telephone_clt}} </td> -->
+                                                    <td>{{r.infoligne_id.ligne_id.libelle}} </td>
+                                                    <td>{{r.prix}} </td>
+                                                    <td>{{r.place}} </td>
+                                                    <td>{{r.montant_billet}} </td>
+                                                    <td>{{r.infoligne_id.date_dep}} </td>
+                                                    <td>{{r.infoligne_id.date_arr}} </td>
+                                                    <td>{{ r.etat_billet.libelle }}</td>
+                                                </tr>
+
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="collapse" id="billets-annules">
+                                        <div id="billets-annules"
+                                            class="d-sm-flex align-items-center justify-content-between mb-4">
+                                            <h4 class="h3 mb-0 text-gray-800">Réservations annulées</h4>
+
+                                        </div>
+                                        <table class="table table-bordered" id="dataTable2" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>DATE ET HEURE DE RESERVATION</th>
+                                                    <th>NOM ET PRENOM</th>
+                                                    <!-- <th>EMAIL</th>
+                                                    <th>TELEPHONE</th> -->
+                                                    <th>LIGNE</th>
+                                                    <th>PRIX</th>
+                                                    <th>NOMBRE DE PLACE</th>
+                                                    <th>MONTANT</th>
+                                                    <th>DATE ET HEURE DE DEPART</th>
+                                                    <th>DATE ET HEURE D'ARRIVEE</th>
+                                                    <th>ETAT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for r in annules %}
+                                                <tr data-bs-toggle="collapse"
+                                                    data-bs-target="#details_{{ forloop.counter }}"
+                                                    aria-expanded="false" aria-controls="details_{{ forloop.counter }}">
+                                                    <td>{{ r.date_heure }}</td>
+                                                    <td>{{ r.nom_clt }} {{r.prenom_clt}} </td>
+                                                    <!-- <td>{{r.email_clt}} </td>
+                                                    <td>{{r.telephone_clt}} </td> -->
+                                                    <td>{{r.infoligne_id.ligne_id.libelle}} </td>
+                                                    <td>{{r.prix}} </td>
+                                                    <td>{{r.place}} </td>
+                                                    <td>{{r.montant_billet}} </td>
+                                                    <td>{{r.infoligne_id.date_dep}} </td>
+                                                    <td>{{r.infoligne_id.date_arr}} </td>
+                                                    <td>{{ r.etat_billet.libelle }}</td>
+                                                </tr>
+
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="collapse" id="billets">
+                                        <div id="billets"
+                                            class="d-sm-flex align-items-center justify-content-between mb-4">
+                                            <h4 class="h3 mb-0 text-gray-800">Toutes les Réservations</h4>
+
+                                        </div>
+                                        <table class="table table-bordered" id="dataTable2" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>DATE ET HEURE DE RESERVATION</th>
+                                                    <th>NOM ET PRENOM</th>
+                                                    <!-- <th>EMAIL</th>
+                                                    <th>TELEPHONE</th> -->
+                                                    <th>LIGNE</th>
+                                                    <th>PRIX</th>
+                                                    <th>NOMBRE DE PLACE</th>
+                                                    <th>MONTANT</th>
+                                                    <th>DATE ET HEURE DE DEPART</th>
+                                                    <th>DATE ET HEURE D'ARRIVEE</th>
+                                                    <th>ETAT</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for r in billets %}
+                                                <tr data-bs-toggle="collapse"
+                                                    data-bs-target="#details_{{ forloop.counter }}"
+                                                    aria-expanded="false" aria-controls="details_{{ forloop.counter }}">
+                                                    <td>{{ r.date_heure }}</td>
+                                                    <td>{{ r.nom_clt }} {{r.prenom_clt}} </td>
+                                                    <!-- <td>{{r.email_clt}} </td>
+                                                    <td>{{r.telephone_clt}} </td> -->
+                                                    <td>{{r.infoligne_id.ligne_id.libelle}} </td>
+                                                    <td>{{r.prix}} </td>
+                                                    <td>{{r.place}} </td>
+                                                    <td>{{r.montant_billet}} </td>
+                                                    <td>{{r.infoligne_id.date_dep}} </td>
+                                                    <td>{{r.infoligne_id.date_arr}} </td>
+                                                    <td>{{ r.etat_billet.libelle }}</td>
+                                                </tr>
+
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
                 <!-- Page Heading -->
                 <div id="voyages" class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Liste des Voyages</h1>
-                    
+
                 </div>
 
                 <!-- Pending Requests Card Example -->
@@ -460,60 +694,245 @@
                 <div class="row">
 
                     <!-- Area Chart -->
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable4" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>DATE DE DEPART</th>
-                                        <th>LIGNE</th>
-                                        <th>PRIX</th>
-                                        <th>PLACE RESTANTE</th>
-                                        <th>BUS</th>
-                                        <th>OPTIONS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for i in infln %}
-                                    
-                                    {% if i.etat_infoligne.id == 2 %}
-                                    <tr>
-                                        <td>{{ i.date_dep }}</td>
-                                        <td>{{ i.ligne_id.libelle }}</td>
-                                        <td>{{ i.prix }}</td>
-                                        <td>{{ i.place_restante}} </td>
-                                        <td>{{ i.bus_id.matricule_bus}} </td>
-                                        <td>
-                                            <div class="dropdown no-arrow">
-                                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                    aria-labelledby="dropdownMenuLink">
-                                                    <div class="dropdown-header">Options:</div>
-                                                    <a class="dropdown-item" href="{% url 'companyman:infoligne_edit_view' i.id %}">Modifier</a>
-                                                    <a class="dropdown-item" href="{% url 'companyman:supprimer_infoligne' i.id %}">Supprimer</a>
-                                                    <!-- <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="#">Something else here</a> -->
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endif %}
-                                        
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#voyages-passes" aria-expanded="false"
+                                    aria-controls="voyages-passes">Voir la liste des voyages passés</button>
+                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#voyages-en-cours" aria-expanded="false"
+                                    aria-controls="voyages-en-cours">Voir la liste des voyages en cours</button>
+                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#voyages-a-venir" aria-expanded="false"
+                                    aria-controls="voyages-a-venir">Voir la liste des voyages à venir</button>
+                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#voyages" aria-expanded="false" aria-controls="voyages">Voir la
+                                    liste de tous les voyages</button>
+                            </div>
                         </div>
-                        
+                    </div>
+
+                    <div class="container mt-3">
+                        <div class="row">
+                            <div class="col">
+                                <div class="collapse" id="voyages-passes">
+                                    <div id="voyages-passes"
+                                        class="d-sm-flex align-items-center justify-content-between mb-4">
+                                        <h4 class="h3 mb-0 text-gray-800">Voyages passés</h4>
+                                    </div>
+                                    <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>DATE DE DEPART</th>
+                                                <th>LIGNE</th>
+                                                <th>PRIX</th>
+                                                <th>PLACE RESTANTE</th>
+                                                <th>BUS</th>
+                                                <th>OPTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in passe %}
+
+                                            {% if i.etat_infoligne.id == 2 %}
+                                            <tr>
+                                                <td>{{ i.date_dep }}</td>
+                                                <td>{{ i.ligne_id.libelle }}</td>
+                                                <td>{{ i.prix }}</td>
+                                                <td>{{ i.place_restante}} </td>
+                                                <td>{{ i.bus_id.matricule_bus}} </td>
+                                                <td>
+                                                    <div class="dropdown no-arrow">
+                                                        <a class="dropdown-toggle" href="#" role="button"
+                                                            id="dropdownMenuLink1" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                            aria-labelledby="dropdownMenuLink">
+                                                            <div class="dropdown-header">Options:</div>
+                                                            <a class="dropdown-item"
+                                                                href="{% url 'companyman:infoligne_edit_view' i.id utilisateur.id %}">Modifier</a>
+                                                            <a class="dropdown-item"
+                                                                href="{% url 'companyman:supprimer_infoligne' i.id utilisateur.id %}">Supprimer</a>
+                                                            <!-- <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#">Something else here</a> -->
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="collapse" id="voyages-en-cours">
+                                    <div id="voyages-en-cours"
+                                        class="d-sm-flex align-items-center justify-content-between mb-4">
+                                        <h4 class="h3 mb-0 text-gray-800">Voyages en cours</h4>
+                                    </div>
+                                    <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>DATE DE DEPART</th>
+                                                <th>LIGNE</th>
+                                                <th>PRIX</th>
+                                                <th>PLACE RESTANTE</th>
+                                                <th>BUS</th>
+                                                <th>OPTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in encours %}
+
+                                            {% if i.etat_infoligne.id == 2 %}
+                                            <tr>
+                                                <td>{{ i.date_dep }}</td>
+                                                <td>{{ i.ligne_id.libelle }}</td>
+                                                <td>{{ i.prix }}</td>
+                                                <td>{{ i.place_restante}} </td>
+                                                <td>{{ i.bus_id.matricule_bus}} </td>
+                                                <td>
+                                                    <div class="dropdown no-arrow">
+                                                        <a class="dropdown-toggle" href="#" role="button"
+                                                            id="dropdownMenuLink1" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                            aria-labelledby="dropdownMenuLink">
+                                                            <div class="dropdown-header">Options:</div>
+                                                            <a class="dropdown-item"
+                                                                href="{% url 'companyman:infoligne_edit_view' i.id utilisateur.id %}">Modifier</a>
+                                                            <a class="dropdown-item"
+                                                                href="{% url 'companyman:supprimer_infoligne' i.id utilisateur.id %}">Supprimer</a>
+                                                            <!-- <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#">Something else here</a> -->
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="collapse" id="voyages-a-venir">
+                                    <div id="voyages-a-venir"
+                                        class="d-sm-flex align-items-center justify-content-between mb-4">
+                                        <h4 class="h3 mb-0 text-gray-800">Voyages à venir</h4>
+                                    </div>
+                                    <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>DATE DE DEPART</th>
+                                                <th>LIGNE</th>
+                                                <th>PRIX</th>
+                                                <th>PLACE RESTANTE</th>
+                                                <th>BUS</th>
+                                                <th>OPTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in a_venir %}
+
+                                            {% if i.etat_infoligne.id == 2 %}
+                                            <tr>
+                                                <td>{{ i.date_dep }}</td>
+                                                <td>{{ i.ligne_id.libelle }}</td>
+                                                <td>{{ i.prix }}</td>
+                                                <td>{{ i.place_restante}} </td>
+                                                <td>{{ i.bus_id.matricule_bus}} </td>
+                                                <td>
+                                                    <div class="dropdown no-arrow">
+                                                        <a class="dropdown-toggle" href="#" role="button"
+                                                            id="dropdownMenuLink1" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                            aria-labelledby="dropdownMenuLink">
+                                                            <div class="dropdown-header">Options:</div>
+                                                            <a class="dropdown-item"
+                                                                href="{% url 'companyman:infoligne_edit_view' i.id utilisateur.id %}">Modifier</a>
+                                                            <a class="dropdown-item"
+                                                                href="{% url 'companyman:supprimer_infoligne' i.id utilisateur.id %}">Supprimer</a>
+                                                            <!-- <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#">Something else here</a> -->
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="collapse" id="voyages">
+                                    <div id="voyages" class="d-sm-flex align-items-center justify-content-between mb-4">
+                                        <h4 class="h3 mb-0 text-gray-800">Tous les Voyages</h4>
+                                    </div>
+                                    <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>DATE DE DEPART</th>
+                                                <th>LIGNE</th>
+                                                <th>PRIX</th>
+                                                <th>PLACE RESTANTE</th>
+                                                <th>BUS</th>
+                                                <th>OPTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in infln %}
+
+                                            {% if i.etat_infoligne.id == 2 %}
+                                            <tr>
+                                                <td>{{ i.date_dep }}</td>
+                                                <td>{{ i.ligne_id.libelle }}</td>
+                                                <td>{{ i.prix }}</td>
+                                                <td>{{ i.place_restante}} </td>
+                                                <td>{{ i.bus_id.matricule_bus}} </td>
+                                                <td>
+                                                    <div class="dropdown no-arrow">
+                                                        <a class="dropdown-toggle" href="#" role="button"
+                                                            id="dropdownMenuLink1" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                                        </a>
+                                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                                            aria-labelledby="dropdownMenuLink">
+                                                            <div class="dropdown-header">Options:</div>
+                                                            <a class="dropdown-item"
+                                                                href="{% url 'companyman:infoligne_edit_view' i.id utilisateur.id %}">Modifier</a>
+                                                            <a class="dropdown-item"
+                                                                href="{% url 'companyman:supprimer_infoligne' i.id utilisateur.id %}">Supprimer</a>
+                                                            <!-- <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#">Something else here</a> -->
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
+
                 <!-- Page Heading -->
                 <div id="villes" class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Liste des Villes</h1>
-                    
+
                 </div>
 
                 <!-- Pending Requests Card Example -->
@@ -521,64 +940,109 @@
                 <div class="row">
 
                     <!-- Area Chart -->
+
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable1" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>IDENTIFIANT</th>
-                                        <th>NOM DE LA VILLE</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for v in villes %}
-                                    <tr>
-                                        <td>{{ v.id }}</td>
-                                        <td>{{ v.nom_ville }}</td>
-                                        
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#liste-villes" aria-expanded="false"
+                                        aria-controls="liste-villes">Voir la liste</button>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="container mt-3">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="collapse" id="liste-villes">
+                                        <div id="liste-villes"
+                                            class="d-sm-flex align-items-center justify-content-between mb-4">
+                                            <h4 class="h3 mb-0 text-gray-800">Les villes</h4>
+                                        </div>
+                                        <table class="table table-bordered" id="dataTable2" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>IDENTIFIANT</th>
+                                                    <th>NOM DE LA VILLE</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for v in villes %}
+                                                <tr>
+                                                    <td>{{ v.id }}</td>
+                                                    <td>{{ v.nom_ville }}</td>
+
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
+                    </div>
                 </div>
                 <!-- Page Heading -->
                 <div id="lignes" class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Liste des Villes</h1>
-                    
+                    <h1 class="h3 mb-0 text-gray-800">Liste des lignes</h1>
+
                 </div>
                 <div class="row">
 
                     <!-- Area Chart -->
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable3" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>IDENTIFIANT</th>
-                                        <th>LIGNE</th>
-                                        <th>DUREE DU TRAJET (en minutes)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for l in lignes %}
-                                    <tr>
-                                        <td>{{ l.id }}</td>
-                                        <td>{{ l.libelle }}</td>
-                                        <td>{{ l.duree_trajet }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#liste-lignes" aria-expanded="false"
+                                        aria-controls="liste-lignes">Voir la liste</button>
+                                </div>
+                            </div>
                         </div>
-                        
+
+                        <div class="container mt-3">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="collapse" id="liste-lignes">
+                                        <div id="liste-lignes"
+                                            class="d-sm-flex align-items-center justify-content-between mb-4">
+                                            <h4 class="h3 mb-0 text-gray-800">Les lignes</h4>
+                                        </div>
+                                        <table class="table table-bordered" id="dataTable2" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>IDENTIFIANT</th>
+                                                    <th>LIGNE</th>
+                                                    <th>DUREE DU TRAJET</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for l in lignes %}
+                                                <tr>
+                                                    <td>{{ l.id }}</td>
+                                                    <td>{{ l.libelle }}</td>
+                                                    <td>{{ l.duree_trajet }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    
                 </div>
-                
+
                 <!-- Content Row -->
-                
+
             </div>
             <!-- /.container-fluid -->
 
@@ -617,14 +1081,13 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-body">Cliquez sur "Déconnexion" pour mettre fin à la session.</div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Logout</a>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Annuler</button>
+                <a class="btn btn-primary" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Déconnexion</a>
             </div>
         </div>
     </div>
 </div>
 
 {% endblock contenu %}
-    

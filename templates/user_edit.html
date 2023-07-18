@@ -50,7 +50,10 @@
                             <input type="hidden" name="personnel_actif" value="True">  <!-- Champ personnel_actif -->
                             <button type="submit" class="btn btn-primary btn-user btn-block">Sauvegarder</button>
                         </form><hr>
-
+                        <button class="btn btn-bd-primary " style="width: 25%; color: rgb(16, 17, 17);  font-size: 20px; font-weight: 700;">
+                            <a class="btn-bd-primary"
+                                href="{% url 'companyman:espace_compagnie_agent' user_id=user.id %}">Aller à l'accueil</a>
+                        </button>
                     </div>
                 </div>
             </div>

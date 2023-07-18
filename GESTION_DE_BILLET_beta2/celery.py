@@ -1,31 +1,29 @@
+from __future__ import absolute_import, unicode_literals
+import os
 from celery import Celery
+from django.conf import settings
 from datetime import timedelta
-from django.utils import timezone
-from client.models import Billet
+from celery.schedules import crontab
 
-# Créer une instance de l'application Celery
+# Définir le nom du projet Django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'GESTION_DE_BILLET_beta2.settings')
+
 app = Celery('GESTION_DE_BILLET_beta2')
+app.conf.result_serializer = 'json'
+# Charger la configuration de Celery à partir des paramètres Django
+app.config_from_object(settings, namespace='CELERY')
 
-# Charger la configuration de Django pour Celery
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app.conf.beat_schedule = {
+    'update-billets-every-minute': {
+        'task': 'companyman/tasks.update_billets',
+        'schedule': timedelta(minutes=1),
+    },
+}
 
-# Découvrir les tâches dans les applications Django
+# Découvrir les tâches automatiques dans les applications Django
 app.autodiscover_tasks()
 
+app.task(bind=True)
 
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    from client.tasks import update_billets
-    # Planifier la tâche pour s'exécuter toutes les 60 secondes
-    sender.add_periodic_task(60.0, update_billets.s(), name='update-billets')
-
-
-@app.task
-def update_billets():
-    # Récupérer tous les billets à mettre à jour
-    billets = Billet.objects.filter(infoligne_id__date_dep__lt=timezone.now(), etat_billet=1)
-    
-    # Mettre à jour les billets
-    for billet in billets:
-        billet.etat_billet_id = 4
-        billet.save()
+def debug_task(self):
+    print(f'Request : {self.request!r}')

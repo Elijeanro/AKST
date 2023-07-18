@@ -7,7 +7,7 @@ urlpatterns = [
     path('',views.accueil_view,name='accueil'),
     path('suggestion/',views.suggestionForm,name='suggestion'),
     path('etape1/',views.reservation1_view,name='etape1'),
-    path('listechoix/',views.listechoix_view,name='listechoix'),
+    path('listechoix/<str:nom>',views.listechoix_view,name='listechoix'),
     path('etape2/details/<int:billet_id>/',views.billet_detail_view,name='billet_detail_view'),
     path('etape2/<int:res_id>/',views.reservation2_view,name='etape2'),
     path('infoligne/<int:ln_id>/',views.infoligne_view, name='infoligne'),
@@ -19,6 +19,6 @@ urlpatterns = [
     path('compagnies/',views.lescompagnies_view,name='lescompagnies'),
     path('compagnie/<int:cp_id>/',views.lacompagnie_view, name='lacompagnie'),
     path('generate-pdf/<int:billet_id>/', views.generate_pdf, name='generate_pdf'),
-    path('info_par_ligne/<str:ligne>/', views.info_par_ligne_view,name='info_par_ligne')
+    path('info_par_ligne/<str:ligne>/<str:nom>', views.info_par_ligne_view,name='info_par_ligne')
 ]
 
