@@ -52,7 +52,7 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Custom Utilities:</h6>
-                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp.id %}">Ajouter un
+                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp.id user.id %}">Ajouter un
                         utilisateur</a>
                     <a class="collapse-item" href="utilities-border.html">Supprimer un utilisateur</a>
                     <a class="collapse-item" href="utilities-animation.html">Editer un utilisateur</a>
@@ -80,7 +80,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Login Screens:</h6>
                     <a class="collapse-item" href="{% url 'companyman:connexion_compagnie' comp.nom_cp %}">Login</a>
-                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp.id %}">Register</a>
+                    <a class="collapse-item" href="{% url 'companyman:creer_utilisateur' comp.id user.id %}">Register</a>
                     <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
                     <div class="collapse-divider"></div>
                 </div>

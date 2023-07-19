@@ -379,7 +379,7 @@ def ajouter_infoligne(request, comp_id, user_id):
             )
             infln.save()
 
-            return redirect(reverse('companyman:detail_infoligne', args=[infln.pk]))
+            return redirect(reverse('companyman:detail_infoligne', args=[infln.pk, user.id]))
 
         else:
             messages.error(request, "Une erreur s'est produite.")

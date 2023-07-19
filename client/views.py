@@ -76,17 +76,16 @@ def listechoix_view(request,nom):
     return render(request,'listechoix.html',context)
 
 def info_par_ligne_view(request, ligne,nom):
-    
-    if nom == 'client':
-        infln = InfoLigne.objects.filter(ligne_id=id_ligne,date_dep__gt=datetime.datetime.now(),place_restante__gt=0)
-    else:
-        comp = get_object_or_404(Compagnie, nom_cp=nom)
-        bus = Bus.objects.filter(compagnie_id=comp.id)
-        bus_ids = bus.values_list('id', flat=True)  
-        infln = InfoLigne.objects.filter(bus_id__in=bus_ids, date_dep__gt=datetime.datetime.now(), place_restante__gt=0)
     la_ligne = Ligne.objects.filter(libelle=ligne).first()
     if la_ligne:
         id_ligne = la_ligne.id
+        if nom == 'client':
+            infln = InfoLigne.objects.filter(ligne_id=id_ligne,date_dep__gt=datetime.datetime.now(),place_restante__gt=0)
+        else:
+            comp = get_object_or_404(Compagnie, nom_cp=nom)
+            bus = Bus.objects.filter(compagnie_id=comp.id)
+            bus_ids = bus.values_list('id', flat=True)  
+            infln = InfoLigne.objects.filter(ligne_id=id_ligne,bus_id__in=bus_ids, date_dep__gt=datetime.datetime.now(), place_restante__gt=0)
         context = {
             'la_ligne': la_ligne,
             'infln': infln

@@ -79,13 +79,21 @@
         </div>
         <p><h6>Votre réservation a été faite avec succès. Veuillez consulter votre email pour les détails de votre billet</h6></p>
         <p><h4>Veuillez vous présenter au guichet de control de billet au plus tard 30 minutes avant embarquement.</h4></p>
+        <hr>
+        <div class="btn-group " role="group" aria-label="Boutons">
+            <div class="row">
+                <button><a class="btn btn-group m-5" href="javascript:history.go(-1);">&laquo; Revenir en arrière</a></button>
+            </div>
+        
+            <div class="row">
+                <button><a class="btn-bd-download btn-group ml-5" href="{% url 'client:generate_pdf' billet_id=billet.id %}" style="font-size: 25px;">Télécharger en PDF</a></button>
+            </div>
+        </div>
+        
     </div>
     
-    <div  class="btn-group" role="group" aria-label="Boutons">
-        <footer><a class="btn-bd-download" href="{% url 'client:generate_pdf' billet_id=billet.id %}">Télécharger en PDF</a></footer>
-
-        <footer><a class="btn" href="{% url 'client:accueil' %} ">&laquo; Revenir en arrière</a></footer><br>
-    </div>
+    
+    <hr><hr>
     <script>
         $(document).ready(function () {
             $('#tableau').DataTable({
